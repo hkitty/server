@@ -15,14 +15,9 @@ public:
     MessageController();
     ~MessageController();
 
-
-public:
-
+private:
     unsigned short port;
     bool isStarted = false;
-
-//    int i = 0;
-//    int size = 0;
 
 public:
     void startReceiver(int _port);
@@ -32,9 +27,7 @@ public:
 private:
     void receiver();
 
-public:
-    std::string data;
-
+private:
     sf::UdpSocket socket;
     sf::IpAddress sender;
     sf::Packet packet;
@@ -42,6 +35,7 @@ public:
     sf::Thread TStartReceiver;
     sf::Thread TStartParser;
 
+public:
     Parser *parser = new Parser;
     Queue *queue = new Queue;
     BanList *banlist = new BanList;

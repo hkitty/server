@@ -3,48 +3,17 @@
 Accounts::Accounts()
 {
     qDebug() << "Create accounts";
-//    qDebug() << "Load Accounts...";
-//    QString msgError;
-//    QString line;
-//    QStringList slist;
-//    std::string log, pass;
-//    if ( accountsFile->exists() ) {
-//        if ( !accountsFile->open(QIODevice::ReadOnly | QIODevice::Text) ) {
-//            qDebug() << "Can`t open accountsFile";
-//            msgError = accountsFile->errorString();
-//            qDebug() << msgError << " [Error]";
-//        }
-
-
-//        while ( !accountsFile->atEnd() ) {
-//            User *user = new User;
-
-//            line = accountsFile->readLine();
-//            slist = line.split(" ");
-
-//            log = slist.at(0).toStdString();
-//            //qDebug() << "userLog";
-//            pass = slist.at(1).toStdString();
-//            pass = pass.erase(pass.size() - 1);
-//            user->userLogin = log;
-//            user->userPassword = pass;
-//            //qDebug() << "userPass";
-//            //std::cout << "Log: " << log << " Pass: " << pass << std::endl;
-//            //qDebug() << "Log: " << QString::fromStdString(user->userLogin) << "Pass: " << QString::fromStdString(user->userPassword);
-//            users.append(*user);
-//            delete user;
-//            //qDebug() << users.size() << " [Users size]";
-//        }
-
-//        accountsFile->close();
-//    } else {
-//        qDebug() << "File not found";
-//    }
 }
 
 Accounts::~Accounts()
 {
 
+}
+
+void Accounts::addUser(std::string log, std::string pass, std::string ip, unsigned short port)
+{
+    User user(log, pass, ip, port);
+    users.append(user);
 }
 
 void Accounts::newUser(std::string log, std::string pass)
@@ -69,29 +38,41 @@ void Accounts::showUsers()
 {
     if ( !users.isEmpty() ) {
     QListIterator<User> it(users);
-    User *user;// = new User(NULL, NULL, NULL, NULL);
+    User user;// = new User(NULL, NULL, NULL, NULL);
 
         while ( it.hasNext() ) {
-            *user = it.next();
-            std::cout << "Log: "<< user->userLog << " Pass: " << user->userPass << std::endl;
+            user = it.next();
+            std::cout << "Log: "<< user.userLog << " Pass: " << user.userPass << std::endl;
             //qDebug() << "Login: " << QString::fromStdString(it.next().userLogin) << " Pass: " << QString::fromStdString(it.next().userPassword);
         }
+    } else {
+        qDebug() << "Users is emp";
     }
 }
 
-QList<QString> Accounts::getUser(std::string IP)
+QList<QString> Accounts::getCharacters(std::string IP)
 {
+    QList<QString> nicklist;
+
+    if ( !users.isEmpty() ) {
+
     QList<User>::iterator it = users.begin();
 
     qDebug() << "Enter getUser()";
 
-    while ( it != users.end() ) {
-        qDebug() << "Enter while";
-        if ( IP == (*it).userIP ) {
-            return (*it).nickList;
+        while ( it != users.end() ) {
+            qDebug() << "Enter while";
+            if ( IP == (*it).userIP ) {
+                nicklist = (*it).nickList;
+            }
+            it++;
         }
-        it++;
+
+        if ( nicklist.isEmpty() ) {
+            qDebug() << "NickList n f";
+        }
     }
+    return nicklist;
 }
 
 bool Accounts::check(std::string _log, std::string _pass, std::string IP, unsigned short port)
@@ -118,9 +99,9 @@ bool Accounts::check(std::string _log, std::string _pass, std::string IP, unsign
 
 
             if ( _log == slist.at(0).toStdString() && _pass == slist.at(1).toStdString() ) {
-                User *user = new User(slist.at(0).toStdString(), slist.at(1).toStdString(), IP, port);
+//                User user(slist.at(0).toStdString(), slist.at(1).toStdString(), IP, port);
 
-                users.append(*user);
+//                users.append(user);
 
                 accountsFile->close();
                 return true;

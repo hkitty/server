@@ -12,8 +12,6 @@ public:
     ~Queue();
 
 public:
-
-
     QQueue<Task> Tasks;
 
 public:

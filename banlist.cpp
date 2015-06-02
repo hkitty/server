@@ -5,6 +5,7 @@ BanList::BanList()
     qDebug() << "Load BanList...";
     QString msgError;
     std::string string;
+
     if ( banListFile->exists() ) {
         if ( !banListFile->open(QIODevice::ReadOnly | QIODevice::Text) ) {
             qDebug() << "Can`t open banListFile";
@@ -18,11 +19,11 @@ BanList::BanList()
             bans.append(string);
         }
 
-        banListFile->close();
     } else {
+        banListFile->open(QIODevice::WriteOnly);
         qDebug() << "File not found";
     }
-
+banListFile->close();
 }
 
 BanList::~BanList()

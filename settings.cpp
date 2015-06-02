@@ -2,6 +2,25 @@
 
 Settings::Settings()
 {
+    if ( !QDir("Accounts").exists() ) {
+        QDir().mkdir("Accounts");
+    }
+    if ( !QDir("Characters").exists() ) {
+        QDir().mkdir("Characters");
+    }
+
+    if ( !QFile(QDir::currentPath() + "/AccountsList.txt").exists() ) {
+        QFile file;
+        file.open(QIODevice::WriteOnly);
+        file.close();
+    }
+
+    if ( !QFile(QDir::currentPath() + "/BanList.txt").exists() ) {
+        QFile file;
+        file.open(QIODevice::WriteOnly);
+        file.close();
+    }
+
     qDebug() << "Create settings";
     port = 1234;
     rootLog  = "root";

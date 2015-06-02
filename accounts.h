@@ -13,21 +13,16 @@ public:
     ~Accounts();
 
 public:
-//    struct User {
-//        std::string userLogin;
-//        std::string userPassword;
-//    };
-
-public:
     QList<User> users;
 
-public:
-    QFile *accountsFile = new QFile("/home/hkitty/Projects/Qt/Test/s2/Accounts.txt");
+private:
+    QFile *accountsFile = new QFile(QDir::currentPath() + "/AccountsList.txt");
 
 public:
+    void addUser(std::string log, std::string pass, std::string ip, unsigned short port);
     void newUser(std::string log, std::string pass);
     void showUsers();
-    QList<QString> getUser(std::string IP);
+    QList<QString> getCharacters(std::string IP);
 
     bool check(std::string _log, std::string _pass, std::string IP, unsigned short port);
 };

@@ -12,7 +12,7 @@ public:
     AdminInterface();
     ~AdminInterface();
 
-public:
+private:
     std::string command;
     std::string IP;
     int id;
@@ -22,7 +22,7 @@ public:
     void authentication();
     void checkCommand();
 
-public:
+private:
     MessageController *msgCntr = new MessageController;
     Settings *settings = new Settings;
 };

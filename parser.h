@@ -12,14 +12,23 @@ public:
     Parser();
     ~Parser();
 
-public:
+private:
     int mark = 1337;
     int i = 0;
 
 public:
     void receive(Task task);
 
+public:
     Accounts *accounts = new Accounts;
+
+private:
+    enum Commands {
+        Login,
+        GetUserCharacters,
+        Registration,
+        NewCharacter
+    };
 
 };
 

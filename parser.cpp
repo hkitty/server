@@ -27,17 +27,17 @@ void Parser::receive(Task task)
     qDebug() << _mark << "[mark]";
 
     if ( _mark == mark ) {
-//        qDebug() << "Mark == mark";
-    packet >> command;
+        packet >> command;
 
         switch (command) {
-            case 0: {
+            case Commands::Login: {
                 std::string login, pass;
                 packet >> login >> pass;
 
                 if ( accounts->check(login, pass, task.sender, task.port) ) {
                     qDebug() << "Login OK";
 
+                    accounts->addUser(login, pass, task.sender, task.port);
                     bool isLogin = true;
                     outPacket << mark << command << isLogin;
                     socket.send(outPacket, task.sender, task.port);
@@ -57,29 +57,41 @@ void Parser::receive(Task task)
             }
             break;
 
-            case 1: {
+            case Commands::GetUserCharacters: {
 //                    User *user;
 
-                    QList<QString> users;
-                    users = accounts->getUser(task.sender);
-                    qDebug() << " 3";
+                    QList<QString> characters;
 
-                    QList<QString>::iterator it = users.begin();
+                    characters = accounts->getCharacters(task.sender);
+                    qDebug() << "7148";
+                    qDebug() <<"Size: "<< characters.size();
+                    if ( !characters.isEmpty() ) {
+                        qDebug() << "Enter if";
 
-                    qDebug() <<"Size: "<< users.size();
-                    outPacket << mark << command << users.size();
+                        QListIterator<QString> it(characters);
+                        QString characterName;
+                        qDebug() << "Create it";
 
-                        while ( it != users.end() ) {
-                            outPacket << (*it).toStdString();
-                            it++;
-                        }
+                        outPacket << mark << command << characters.size();
+                        qDebug() << "Out pack";
+                            while ( it.hasNext() ) {
+                                qDebug() << "Enter while";
+                                characterName = it.next();
+                                outPacket << characterName.toStdString();
+                                qDebug() << "add to packet";
+                            }
 
-                    socket.send(outPacket, task.sender, task.port);
-                    outPacket.clear();
+                        socket.send(outPacket, task.sender, task.port);
+                        qDebug() << "send";
+                        outPacket.clear();
+                        qDebug() << "Clear";
+                    } else {
+                        qDebug() << "Users is empty";
+                    }
             }
             break;
 
-            case 2: {
+            case Commands::Registration: {
                     qDebug() << "Cmd 2";
                     std::string log;
                     std::string pass;
@@ -88,6 +100,13 @@ void Parser::receive(Task task)
                     accounts->newUser(log, pass);
             }
             break;
+
+            case Commands::NewCharacter: {
+                    std::string characterNickname;
+                    std::string characterClass;
+                    User user;
+
+            }
 
             default:
                 qDebug() << "404";

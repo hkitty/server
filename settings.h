@@ -4,6 +4,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <QDebug>
+#include <QDir>
 
 class Settings
 {

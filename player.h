@@ -2,6 +2,7 @@
 #define PLAYER_H
 #include <QFile>
 #include <QDebug>
+#include <QDir>
 
 class Player
 {
@@ -11,6 +12,7 @@ public:
 
 public:
     QString nick;
+    QString characterClass;
 
     int hitPoints;
     int manaPoints;

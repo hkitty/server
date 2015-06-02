@@ -5,7 +5,7 @@
 #include <QList>
 #include <QDebug>
 #include <QFile>
-
+#include <QDir>
 class BanList
 {
 public:
@@ -14,7 +14,9 @@ public:
 
 public:
     QList<std::string> bans;
-    QFile *banListFile = new QFile("/home/hkitty/Projects/Qt/Test/s2/BanList.txt");
+
+private:
+    QFile *banListFile = new QFile(QDir::currentPath() + "/BanList.txt");
 
 public:
 //    void add(int userId);

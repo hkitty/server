@@ -27,7 +27,7 @@ void MessageController::receiver() {
             queue->addTask(sender.toString(), port, packet);
             }
 
-            data.clear();
+//            data.clear();
             packet.clear();
         }
     }
@@ -47,7 +47,7 @@ void MessageController::stop() {
 void MessageController::startParser()
 {
 //    int i = 0;
-//    qDebug() << "start parser";
+    qDebug() << "start parser";
     while ( isStarted ) { //--true
         if (!queue->Tasks.isEmpty() ) {
 //            if ( i != 1) {

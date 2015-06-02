@@ -7,6 +7,7 @@
 class User
 {
 public:
+    User();
     User(std::string log, std::string pass, std::string ip, unsigned short port);
     ~User();
 
@@ -26,6 +27,7 @@ public:
 
 public:
     int getStatus();
+    void newCharacter(std::string characterNickname, std::string characterClass);
     void chooseCharacter(std::string characterNickname);
 };
 
