@@ -14,6 +14,7 @@ public:
 
 public:
     QList<User> users;
+    QStringList accLogins;
 
 private:
     QFile *accountsFile = new QFile(QDir::currentPath() + "/AccountsList.txt");
@@ -22,9 +23,11 @@ public:
     void addUser(std::string log, std::string pass, std::string ip, unsigned short port);
     void newUser(std::string log, std::string pass);
     void showUsers();
-    QList<QString> getCharacters(std::string IP);
 
-    bool check(std::string _log, std::string _pass, std::string IP, unsigned short port);
+    bool check(std::string _log, std::string _pass);
+
+    QList<User::Character> getCharacters(std::string IP);
+    void createCharacter(std::string ip, unsigned short port, std::string characterNickname, unsigned short ClassId);
 };
 
 #endif // ACCOUNTS_H

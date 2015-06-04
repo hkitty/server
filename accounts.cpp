@@ -2,7 +2,29 @@
 
 Accounts::Accounts()
 {
+    QStringList slist;
+    QString line;
+    QString msgError;
+
+    if ( accountsFile->exists() ) {
+        if ( !accountsFile->open(QIODevice::ReadOnly | QIODevice::Text) ) {
+            qDebug() << "Can`t open accountsFile";
+            msgError = accountsFile->errorString();
+            qDebug() << msgError << " [Error]";
+        }
+
+        while ( !accountsFile->atEnd() ) {
+            line = accountsFile->readLine();
+
+            line = line.remove(line.size() - 1, 1);
+            slist = line.split(" ");
+
+            accLogins.append(slist.at(0));
+                accountsFile->close();
+        }
+    accountsFile->close();
     qDebug() << "Create accounts";
+    }
 }
 
 Accounts::~Accounts()
@@ -18,41 +40,46 @@ void Accounts::addUser(std::string log, std::string pass, std::string ip, unsign
 
 void Accounts::newUser(std::string log, std::string pass)
 {
-    QFile accFile;
-
-    if ( accFile.exists() ) {
-        if ( !accFile.open(QIODevice::Append | QIODevice::Text) ) {
+    if ( accountsFile->exists() ) {
+        if ( !accountsFile->open(QIODevice::Append | QIODevice::Text) ) {
             qDebug() << "AccFile n o";
         }
         std::string user;
         user = log + " " + pass + "\n";
-        accFile.write(QByteArray::fromStdString(user));
-        accFile.close();
+        accountsFile->write(QByteArray::fromStdString(user));
+        accountsFile->close();
 
     } else {
         qDebug() << "AccFile n f";
     }
+
+    QString pathToCharacter = QDir::currentPath() + "/Accounts/" + QString::fromStdString(log) + ".txt";
+    QFile file(pathToCharacter);
+
+    if ( !file.open(QIODevice::WriteOnly) ) {
+        qDebug() << "Error create new user accout file";
+    }
+    file.close();
 }
 
 void Accounts::showUsers()
 {
     if ( !users.isEmpty() ) {
     QListIterator<User> it(users);
-    User user;// = new User(NULL, NULL, NULL, NULL);
+    User user;
 
         while ( it.hasNext() ) {
             user = it.next();
             std::cout << "Log: "<< user.userLog << " Pass: " << user.userPass << std::endl;
-            //qDebug() << "Login: " << QString::fromStdString(it.next().userLogin) << " Pass: " << QString::fromStdString(it.next().userPassword);
         }
     } else {
         qDebug() << "Users is emp";
     }
 }
 
-QList<QString> Accounts::getCharacters(std::string IP)
+QList<User::Character> Accounts::getCharacters(std::string IP)
 {
-    QList<QString> nicklist;
+    QList<User::Character> characters;
 
     if ( !users.isEmpty() ) {
 
@@ -63,19 +90,33 @@ QList<QString> Accounts::getCharacters(std::string IP)
         while ( it != users.end() ) {
             qDebug() << "Enter while";
             if ( IP == (*it).userIP ) {
-                nicklist = (*it).nickList;
+                characters = (*it).characters;
             }
             it++;
         }
 
-        if ( nicklist.isEmpty() ) {
-            qDebug() << "NickList n f";
+        if ( characters.isEmpty() ) {
+            qDebug() << "NickList is empty";
         }
     }
-    return nicklist;
+    return characters;
 }
 
-bool Accounts::check(std::string _log, std::string _pass, std::string IP, unsigned short port)
+void Accounts::createCharacter(std::string ip, unsigned short port, std::string characterNickname, unsigned short ClassId)
+{
+    qDebug() << "Enter create character";
+    QList<User>::iterator it = users.begin();
+
+    while ( it != users.end() ) {
+        qDebug() << "Enter while";
+        if ( (*it).userIP == ip && (*it).userPort == port ) {
+            (*it).newCharacter(characterNickname, ClassId);
+        }
+        it++;
+    }
+}
+
+bool Accounts::check(std::string _log, std::string _pass)
 {
 
     QStringList slist;
@@ -94,24 +135,25 @@ bool Accounts::check(std::string _log, std::string _pass, std::string IP, unsign
 
             line = line.remove(line.size() - 1, 1);
             slist = line.split(" ");
-            //qDebug() << slist.at(0) << " [sl 0]";
-            //qDebug() << slist.at(1) << " [sl 1]";
-
 
             if ( _log == slist.at(0).toStdString() && _pass == slist.at(1).toStdString() ) {
-//                User user(slist.at(0).toStdString(), slist.at(1).toStdString(), IP, port);
+                QListIterator<User> it(users);   //--TODO uncomment
 
-//                users.append(user);
-
+                while ( it.hasNext() ) {
+                    if ( _log == it.next().userLog ) {
+                        accountsFile->close();
+                        return false;
+                    }
+                }
                 accountsFile->close();
                 return true;
+
             } else {
                 //--TODO send error log\pass
             }
         }
 
-    }
-    else {
+    } else {
         qDebug() << "File not found";
     }
     accountsFile->close();

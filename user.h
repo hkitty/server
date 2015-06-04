@@ -15,19 +15,25 @@ public:
     int userStatus; //online/offline/afk
     int userID;
 
-    QList<QString> nickList;
+    struct Character {
+        QString Nickname;
+        unsigned short ClassId;
+    };
+
+    QList<Character> characters;
+    QList<QString> nickList; //For check double nick
 
     std::string userLog;
     std::string userPass;
     std::string userIP;
-    std::string userPort;
+    unsigned short userPort;
     std::string pathToPlayer;
     std::string nickname;
     Player *player;
 
 public:
     int getStatus();
-    void newCharacter(std::string characterNickname, std::string characterClass);
+    void newCharacter(std::string characterNickname, unsigned short characterClass);
     void chooseCharacter(std::string characterNickname);
 };
 

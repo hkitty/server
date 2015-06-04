@@ -13,21 +13,23 @@ class MessageController
 {
 public:
     MessageController();
-    ~MessageController();
-
-private:
-    unsigned short port;
-    bool isStarted = false;
+    ~MessageController(); 
 
 public:
     void startReceiver(int _port);
     void stop();
     void startParser();
 
-private:
-    void receiver();
+public:
+    Parser *parser = new Parser;
+    Queue *queue = new Queue;
+    BanList *banlist = new BanList;
 
 private:
+    unsigned short port;
+    bool isStarted = false;
+
+
     sf::UdpSocket socket;
     sf::IpAddress sender;
     sf::Packet packet;
@@ -35,10 +37,8 @@ private:
     sf::Thread TStartReceiver;
     sf::Thread TStartParser;
 
-public:
-    Parser *parser = new Parser;
-    Queue *queue = new Queue;
-    BanList *banlist = new BanList;
+private:
+    void receiver();
 };
 
 #endif // SERVER_H

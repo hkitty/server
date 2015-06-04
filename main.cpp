@@ -11,10 +11,10 @@ int main(int argc, char *argv[])
 
     AdminInterface admInterface;
 
-//    admInterface.authentication();
+    admInterface.authentication();
 
-    sf::Thread TAdmInterface(&AdminInterface::authentication, &admInterface);
-    TAdmInterface.launch();
+//    sf::Thread TAdmInterface(&AdminInterface::authentication, &admInterface);
+//    TAdmInterface.launch();
 
     return a.exec();
 }

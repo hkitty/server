@@ -24,16 +24,13 @@ void AdminInterface::authentication()
         std::cin >> pass;
 
         if ( log == settings->rootLog.toStdString() && pass == settings->rootPass.toStdString() ) {
-            qDebug() << "";
-            qDebug() << "Welcome!";
-            qDebug() << "(Use commands: Start, Stop, Ban, Unban, showBans, showUsers, setPort, Exit) ";
-            qDebug() << "";
+            qDebug() << "\nWelcome!";
+            qDebug() << "(Use commands: Start, Stop, Ban, Unban, showBans, showUsers, setPort, Exit) \n";
 
             checkCommand();
 
         } else {
-            qDebug() << "";
-            qDebug() << "Wrong login or pass! Try Again.";
+            qDebug() << "\nWrong login or pass! Try Again.";
         }
     }
 }
@@ -82,7 +79,6 @@ void AdminInterface::checkCommand()
         } else {
             qDebug() << "Command not found";
         }
-    //qDebug() << QString::fromStdString(command) + "[Debug]";
     command.clear();
 
     sleep(1);

@@ -1,5 +1,0 @@
-root root
-user user
-hk 123
-mh 123
-morphei mor123

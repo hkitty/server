@@ -10,8 +10,11 @@ User::User(std::string log, std::string pass, std::string ip, unsigned short por
     qDebug() << "Create user";
 //    qDebug() << QString::fromStdString(log);
     QFile file(QDir::currentPath() + "/Accounts/" + QString::fromStdString(log) + ".txt");
+    Character character;
 
-    QString nick;
+    QString line;
+    QString crutch;
+    QStringList charac;
 
     if ( file.exists() ) {
         if ( !file.open(QIODevice::ReadOnly) ) {
@@ -19,10 +22,20 @@ User::User(std::string log, std::string pass, std::string ip, unsigned short por
         }
 
         while ( !file.atEnd() ) {
-            nick = file.readLine();
-            nick.remove(nick.size() - 1, 1);
+            line = file.readLine();
+            line.remove(line.size() - 1, 1);
+            qDebug() << "[User::User] " << "Line: " << line;
+            charac = line.split(" ");
+            character.Nickname = charac.at(0);
+            qDebug() << "[User::User] " << "charac.at(0): " << charac.at(0);
+            qDebug() << "[User::User] " << "charac.at(1): " << charac.at(1);
+            crutch = charac.at(1);
+            qDebug() << "[User::User] " << "Crutch: " << crutch;
+            character.ClassId = crutch.toUShort();
+            qDebug() << "[User::User] " << "character.Nickname: " << character.Nickname;
+            qDebug() << "[User::User] " << "character.ClassId: " << character.ClassId;
 
-            nickList.append(nick);
+            characters.append(character);
         }
 
     } else {
@@ -36,10 +49,10 @@ User::User(std::string log, std::string pass, std::string ip, unsigned short por
     userIP = ip;
     userPort = port;
 
-    QListIterator<QString> it(nickList);
+    QListIterator<Character> it(characters);
 
     while ( it.hasNext() ) {
-        qDebug() << it.next();
+        nickList.append(it.next().Nickname);
     }
 }
 
@@ -53,26 +66,31 @@ int User::getStatus()
     return userStatus;
 }
 
-void User::newCharacter(std::string characterNickname, std::string characterClass)
+void User::newCharacter(std::string characterNickname, unsigned short characterClass)
 {
     QString pathToCharacter = QDir::currentPath() + "/Characters/" + QString::fromStdString(userLog) + "_" + QString::fromStdString(characterNickname) + ".txt";
     QString pathToAccount = QDir::currentPath() + "/Accounts/" + QString::fromStdString(userLog) + ".txt";
     QFile character(pathToCharacter);
-    if ( !character.open(QIODevice::Append) ) {
-        qDebug() << "Character create error";
-    }
-    character.write("100");
-    character.write("100");
-    character.write("12");
-    character.write("4");
-    character.close();
+    if ( !character.exists() ) {
+        if ( !character.open(QIODevice::Append | QIODevice::Text) ) {
+            qDebug() << "Character create error";
+        }
+        character.write(characterClass + "\n");
+        character.write("100\n");
+        character.write("100\n");
+        character.write("12\n");
+        character.write("4");
+        character.close();
 
-    QFile account(pathToAccount);
-    if ( !account.open(QIODevice::Append) ) {
-        qDebug() << "Account character append error";
+        QFile account(pathToAccount);
+        if ( !account.open(QIODevice::Append | QIODevice::Text) ) {
+            qDebug() << "Account character append error";
+        }
+        account.write(QByteArray::fromStdString(characterNickname) + " " + characterClass);
+        account.close();
+    } else {
+        qDebug() << "Nickname used";
     }
-    account.write(QByteArray::fromStdString(characterNickname));
-    account.close();
 }
 
 

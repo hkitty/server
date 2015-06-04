@@ -25,6 +25,9 @@ public:
     void setMark(int _mark);
     int getMark();
     int getPort();
+
+private:
+    void checkResources();
 };
 
 #endif // SETTINGS_H

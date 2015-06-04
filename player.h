@@ -11,14 +11,15 @@ public:
     ~Player();
 
 public:
-    QString nick;
-    QString characterClass;
+    QString nickname;
 
-    int hitPoints;
-    int manaPoints;
-
-    int attack;
-    int defence;
+    unsigned short characterClass;
+    struct Stats {
+        unsigned short hitPoints;
+        unsigned short manaPoints;
+        unsigned short attack;
+        unsigned short defence;
+    } stats;
 };
 
 #endif // PLAYER_H

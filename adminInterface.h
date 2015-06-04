@@ -12,15 +12,16 @@ public:
     AdminInterface();
     ~AdminInterface();
 
+public:
+    void authentication();
+    void checkCommand();
+
+
 private:
     std::string command;
     std::string IP;
     int id;
     int _port;
-
-public:
-    void authentication();
-    void checkCommand();
 
 private:
     MessageController *msgCntr = new MessageController;

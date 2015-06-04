@@ -15,16 +15,14 @@ public:
 public:
     QList<std::string> bans;
 
-private:
-    QFile *banListFile = new QFile(QDir::currentPath() + "/BanList.txt");
-
 public:
-//    void add(int userId);
     void add(std::string userIP);
     bool check(std::string userIP);
-//    void del(int userID);
     void del(std::string userIP);
     void showBans();
+
+private:
+    QFile *banListFile = new QFile(QDir::currentPath() + "/BanList.txt");
 };
 
 #endif // BANLIST_H

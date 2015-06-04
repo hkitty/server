@@ -48,25 +48,11 @@ void BanList::add(std::string userIP)
 
 bool BanList::check(std::string userIP)
 {
-
-//    QListIterator<std::string> it(bans);
-
     if ( bans.contains(userIP) ) {
         return true;
     } else {
         return false;
     }
-//    qDebug() << "Checking... ";
-//    while ( it.hasNext() ) {
-//        if ( userIP == it.next() ) {
-//            qDebug() << "IP detected: ";
-//            qDebug() << QString::fromStdString(it.next());
-//            return false;
-//        }
-//        qDebug() << "Free ip";
-//        it.next();
-//    }
-    //    return true;
 }
 
 void BanList::del(std::string userIP)
@@ -81,7 +67,7 @@ void BanList::del(std::string userIP)
         if ( !banListFile->open(QIODevice::WriteOnly | QIODevice::Truncate) ) {
 
         }
-        //banListFile->flush()
+
         QListIterator<std::string> it(bans);
         while ( it.hasNext() ) {
             string = it.next() + "\n";
