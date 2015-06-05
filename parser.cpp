@@ -174,7 +174,7 @@ void Parser::chooseUserCharacter(int command, std::string ip, unsigned short por
 void Parser::kickUser(unsigned short userID)
 {
     if ( userID <= accounts->users.size() ) {
-        accounts->users.at(userID).~User();
+//        accounts->users.at(userID).~User();
         accounts->users.removeAt(userID);
     } else {
         qDebug() << "User n f";
