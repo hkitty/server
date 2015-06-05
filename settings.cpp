@@ -52,13 +52,13 @@ void Settings::checkResources()
     }
 
     if ( !QFile(QDir::currentPath() + "/AccountsList.txt").exists() ) {
-        QFile file;
+        QFile file(QDir::currentPath() + "/AccountsList.txt");
         file.open(QIODevice::WriteOnly);
         file.close();
     }
 
     if ( !QFile(QDir::currentPath() + "/BanList.txt").exists() ) {
-        QFile file;
+        QFile file(QDir::currentPath() + "/BanList.txt");
         file.open(QIODevice::WriteOnly);
         file.close();
     }

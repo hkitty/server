@@ -12,8 +12,8 @@ public:
 
 public:
     QString nickname;
-
     unsigned short characterClass;
+
     struct Stats {
         unsigned short hitPoints;
         unsigned short manaPoints;

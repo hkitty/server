@@ -17,10 +17,10 @@ void Parser::receive(Task task)
     sf::Packet packet;
 
     packet = task.packet;
-
+    qDebug() << "Packet size: " << packet.getDataSize();
     int command;
     unsigned short _mark;
-    unsigned short port;
+    unsigned short port = 1234;
 
     packet >> _mark;
     qDebug() << _mark << "[mark]";
@@ -29,12 +29,13 @@ void Parser::receive(Task task)
         packet >> port;
         qDebug() << "User port: " <<  port;
         packet >> command;
-
+        qDebug() << "Current command: " << command;
         switch (command) {
             case Commands::Login: {
                 std::string login, pass;
                 packet >> login >> pass;
-
+                qDebug() << "Mark: " << _mark << "Comm: " << command << "Log: " << QString::fromStdString(login) << "Pass: " << QString::fromStdString(pass);
+                qDebug() << "Log size: " << login.size() << "Pass size: " << pass.size();
                 if ( accounts->check(login, pass) ) {
                     accounts->addUser(login, pass, task.sender, port);
                     loginAccept(command, task.sender, port);
@@ -88,10 +89,6 @@ void Parser::receive(Task task)
 
 void Parser::loginAccept(int command, std::string ip, unsigned short port)
 {
-    qDebug() << "Login OK";
-
-
-    qDebug() << ";lasdk";
     bool isLogin = true;
     outPacket << mark << command << isLogin;
     socket.send(outPacket, ip, port);
@@ -101,8 +98,6 @@ void Parser::loginAccept(int command, std::string ip, unsigned short port)
 
 void Parser::loginReject(int command, std::string ip, unsigned short port)
 {
-    qDebug() << "Login false";
-
     bool isLogin = false;
     outPacket << mark << command << isLogin;
     socket.send(outPacket, ip, port);
@@ -140,7 +135,7 @@ void Parser::getUserCharacters(int command, std::string ip, unsigned short port)
 
         qDebug() << "Command: " << command;
         qDebug() << "Characters size: " << characters.size();
-        qDebug() << "Char 1 name: " << characters.at(0).Nickname;
+//        qDebug() << "Char 1 name: " << characters.at(0).Nickname;
         outPacket << mark << command << characters.size();
 
             while ( it != characters.end() ) {
@@ -160,18 +155,30 @@ void Parser::chooseUserCharacter(int command, std::string ip, unsigned short por
 {
     QList<User>::iterator it = accounts->users.begin();
     Player::Stats stats;
+    unsigned short characterClassID;
 
+    qDebug() << "Enter chooseUserChar";
     while ( it != accounts->users.end() ) {
         qDebug() << "Enter while";
         if ( (*it).userIP == ip && (*it).userPort == port ) {
             (*it).chooseCharacter(characterNickname);
             stats = (*it).player->stats;
+            characterClassID = (*it).player->characterClass;
         }
         it++;
     }
-
-    outPacket << stats.attack << stats.defence << stats.hitPoints << stats.manaPoints;
+    outPacket << mark << command << characterClassID << stats.attack << stats.defence << stats.hitPoints << stats.manaPoints;
     socket.send(outPacket, ip, port);
+}
+
+void Parser::kickUser(unsigned short userID)
+{
+    if ( userID <= accounts->users.size() ) {
+        accounts->users.at(userID).~User();
+        accounts->users.removeAt(userID);
+    } else {
+        qDebug() << "User n f";
+    }
 }
 
 

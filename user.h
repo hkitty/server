@@ -13,7 +13,7 @@ public:
 
 public:
     int userStatus; //online/offline/afk
-    int userID;
+    unsigned short userID;
 
     struct Character {
         QString Nickname;
@@ -27,7 +27,7 @@ public:
     std::string userPass;
     std::string userIP;
     unsigned short userPort;
-    std::string pathToPlayer;
+//    std::string pathToPlayer;
     std::string nickname;
     Player *player;
 

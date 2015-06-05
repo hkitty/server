@@ -27,6 +27,7 @@ void MessageController::receiver() {
             packet.clear();
         }
     }
+    qDebug() << "While exit";
 }
 
 void MessageController::startReceiver(int _port) {
@@ -44,7 +45,7 @@ void MessageController::startParser()
 {
     qDebug() << "start parser";
     while ( isStarted ) { //--true
-        //qDebug() << "Parser while start";
+//        qDebug() << "Parser while start";
         if (!queue->Tasks.isEmpty() ) {
             qDebug() << "";
             parser->receive(queue->getTask());

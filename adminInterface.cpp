@@ -62,6 +62,12 @@ void AdminInterface::checkCommand()
             std::cin >> IP;
             msgCntr->banlist->del(IP);
 
+        } else if ( command == "kick" || command == "Kick" ) {
+            std::cout << "Enter ID: ";
+            unsigned short userID;
+            std::cin >> userID;
+            msgCntr->parser->kickUser(userID);
+
         } else if ( command == "showbans" || command == "showBans" || command == "banlist" ) {
             msgCntr->banlist->showBans();
 

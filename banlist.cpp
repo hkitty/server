@@ -20,8 +20,7 @@ BanList::BanList()
         }
 
     } else {
-        banListFile->open(QIODevice::WriteOnly);
-        qDebug() << "File not found";
+        qDebug() << "[BanList::BanList] File not found";
     }
 banListFile->close();
 }

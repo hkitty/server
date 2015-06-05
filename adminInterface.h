@@ -24,8 +24,9 @@ private:
     int _port;
 
 private:
-    MessageController *msgCntr = new MessageController;
     Settings *settings = new Settings;
+    MessageController *msgCntr = new MessageController;
+
 };
 
 #endif // COMMANDCONTROLLER_H

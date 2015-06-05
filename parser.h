@@ -20,6 +20,7 @@ public:
 
 public:
     void receive(Task task);
+    void kickUser(unsigned short userID);
 
 private:
     enum Commands {

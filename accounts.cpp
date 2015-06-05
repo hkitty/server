@@ -24,6 +24,8 @@ Accounts::Accounts()
         }
     accountsFile->close();
     qDebug() << "Create accounts";
+    } else {
+        qDebug() << "[Accounts::Accounts] File not found";
     }
 }
 
@@ -35,6 +37,7 @@ Accounts::~Accounts()
 void Accounts::addUser(std::string log, std::string pass, std::string ip, unsigned short port)
 {
     User user(log, pass, ip, port);
+    user.userID = users.size();
     users.append(user);
 }
 
@@ -70,7 +73,7 @@ void Accounts::showUsers()
 
         while ( it.hasNext() ) {
             user = it.next();
-            std::cout << "Log: "<< user.userLog << " Pass: " << user.userPass << std::endl;
+            std::cout << "UserID: " << user.userID << " Log: "<< user.userLog << " Pass: " << user.userPass << std::endl;
         }
     } else {
         qDebug() << "Users is emp";
@@ -137,14 +140,14 @@ bool Accounts::check(std::string _log, std::string _pass)
             slist = line.split(" ");
 
             if ( _log == slist.at(0).toStdString() && _pass == slist.at(1).toStdString() ) {
-                QListIterator<User> it(users);   //--TODO uncomment
+//                QListIterator<User> it(users);   //--TODO uncomment
 
-                while ( it.hasNext() ) {
-                    if ( _log == it.next().userLog ) {
-                        accountsFile->close();
-                        return false;
-                    }
-                }
+//                while ( it.hasNext() ) {
+//                    if ( _log == it.next().userLog ) {
+//                        accountsFile->close();
+//                        return false;
+//                    }
+//                }
                 accountsFile->close();
                 return true;
 
@@ -159,4 +162,3 @@ bool Accounts::check(std::string _log, std::string _pass)
     accountsFile->close();
     return false;
 }
-
