@@ -12,7 +12,7 @@ public:
     ~User();
 
 public:
-    int userStatus; //online/offline/afk
+    bool userStatus; //online/offline/afk
     unsigned short userID;
 
     struct Character {
@@ -33,8 +33,10 @@ public:
 
 public:
     int getStatus();
+    void deletePlayer();
     void newCharacter(std::string characterNickname, unsigned short characterClass);
     void chooseCharacter(std::string characterNickname);
+    void setStatus(bool _status);
 };
 
 #endif // USERS_H

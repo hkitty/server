@@ -32,6 +32,9 @@ Player::Player(std::string characterNickname, std::string login)
         stats.manaPoints = statsList.at(2);
         stats.attack = statsList.at(3);
         stats.defence = statsList.at(4);
+        position.x = statsList.at(5);
+        position.y = statsList.at(6);
+
     } else {
         qDebug() << "[Player::Player] Character file n f";
     }

@@ -28,7 +28,11 @@ private:
         GetUserCharacters,
         Registration,
         NewCharacter,
-        ChooseCharacter
+        ChooseCharacter,
+        DeleteCharacter,
+        InGame,
+        GetEnemys,
+        PlayerMove
     };
 
     sf::Packet outPacket;
@@ -37,9 +41,13 @@ private:
 private:
     void loginAccept(int command, std::string ip, unsigned short port);
     void loginReject(int command, std::string ip, unsigned short port);
-    void registration(int command, std::string ip, unsigned short port, std::string log, std::string pass);
+    bool registration(int command, std::string ip, unsigned short port, std::string log, std::string pass);
     void getUserCharacters(int command, std::string ip, unsigned short port);
     void chooseUserCharacter(int command, std::string ip, unsigned short port, std::string characterNickname);
+    void newCharacter(int command, std::string ip, unsigned short port, std::string characterNickname, unsigned short characterClassID);
+    void getEnemys(std::string ip, unsigned short port);
+    void sendNewPlayer(std::string ip, unsigned short port);
+    void playerMove(int command, std::string ip, unsigned short port, sf::Vector2f vect);
 };
 
 #endif // PARSER_H

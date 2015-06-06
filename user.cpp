@@ -58,12 +58,19 @@ User::User(std::string log, std::string pass, std::string ip, unsigned short por
 
 User::~User()
 {
-
+    if ( player != nullptr) {
+        delete player;
+    }
 }
 
 int User::getStatus()
 {
     return userStatus;
+}
+
+void User::deletePlayer()
+{
+    delete player;
 }
 
 void User::newCharacter(std::string characterNickname, unsigned short characterClass)
@@ -96,6 +103,12 @@ void User::newCharacter(std::string characterNickname, unsigned short characterC
 
 void User::chooseCharacter(std::string characterNickname)
 {
+    std::cout << "[User::chooseCharacter] Char nickname: " << characterNickname << "\n";
     player = new Player(characterNickname, userLog);
+}
+
+void User::setStatus(bool _status)
+{
+    userStatus = _status;
 }
 

@@ -13,7 +13,7 @@ public:
     ~Accounts();
 
 public:
-    QList<User> users;
+    QList<User*> users;
     QStringList accLogins;
 
 private:
@@ -27,7 +27,7 @@ public:
     bool check(std::string _log, std::string _pass);
 
     QList<User::Character> getCharacters(std::string IP);
-    void createCharacter(std::string ip, unsigned short port, std::string characterNickname, unsigned short ClassId);
+    bool createCharacter(std::string ip, unsigned short port, std::string characterNickname, unsigned short ClassId);
 };
 
 #endif // ACCOUNTS_H

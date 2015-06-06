@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QDir>
+#include <SFML/Graphics.hpp>
 
 class Player
 {
@@ -20,6 +21,7 @@ public:
         unsigned short attack;
         unsigned short defence;
     } stats;
+    sf::Vector2f position;
 };
 
 #endif // PLAYER_H
