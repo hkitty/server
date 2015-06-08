@@ -4,7 +4,7 @@ Settings::Settings()
 {
     checkResources();
 
-    qDebug() << "Create settings";
+    qDebug() << "Load settings";
     port = 1234;
     rootLog  = "root";
     rootPass = "root";

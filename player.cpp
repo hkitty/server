@@ -1,13 +1,14 @@
 #include "player.h"
 
-Player::Player(std::string characterNickname, std::string login)
+Player::Player(std::string characterNickname, std::string login) :
+    TStartAttack(&Player::attack, this)
 {
-    qDebug() << "Create player";
+    qDebug() << "Load player: " << QString::fromStdString(characterNickname);
     qDebug() << "Character nickname size: " << characterNickname.size();
     nickname = QString::fromStdString(characterNickname);
     qDebug() << "Character nickname: " << QString::fromStdString(characterNickname);
     qDebug() << "Current path: " << QDir::currentPath();
-    qDebug() << "User login: " << QString::fromStdString(login);
+    qDebug() << "[Player::player] User login: " << QString::fromStdString(login);
     QString path = QDir::currentPath() + "/Characters/" + QString::fromStdString(login) + "_" + QString::fromStdString(characterNickname) + ".txt";
     QFile character(path);
     QString line;
@@ -36,7 +37,7 @@ Player::Player(std::string characterNickname, std::string login)
         position.y = statsList.at(6);
 
     } else {
-        qDebug() << "[Player::Player] Character file n f";
+        qDebug() << "[Player::Player] Character file not found";
     }
     character.close();
 }
@@ -44,5 +45,12 @@ Player::Player(std::string characterNickname, std::string login)
 Player::~Player()
 {
 
+}
+
+void Player::attack()
+{
+    inFight = true;
+    timer->start(10000);
+    inFight = false;
 }
 

@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QDir>
+#include <QTimer>
 #include <SFML/Graphics.hpp>
 
 class Player
@@ -13,6 +14,7 @@ public:
 
 public:
     QString nickname;
+    bool inFight;
     unsigned short characterClass;
 
     struct Stats {
@@ -21,7 +23,14 @@ public:
         unsigned short attack;
         unsigned short defence;
     } stats;
+
     sf::Vector2f position;
+
+public:
+    QTimer *timer = new QTimer;
+    sf::Thread TStartAttack;
+public:
+    void attack();
 };
 
 #endif // PLAYER_H

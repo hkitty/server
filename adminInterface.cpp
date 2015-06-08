@@ -3,7 +3,7 @@
 
 AdminInterface::AdminInterface()
 {
-    qDebug() << "Create commandController";
+//    qDebug() << "Create commandController";
 }
 
 AdminInterface::~AdminInterface()
@@ -25,7 +25,7 @@ void AdminInterface::authentication()
 
         if ( log == settings->rootLog.toStdString() && pass == settings->rootPass.toStdString() ) {
             qDebug() << "\nWelcome!";
-            qDebug() << "(Use commands: Start, Stop, Ban, Unban, showBans, showUsers, setPort, Exit) \n";
+            qDebug() << "(Use commands: Start, Stop, Kick, Ban, Unban, showBans, showUsers, \nsetPort, setRootLogin, setRootPass, Exit) \n";
 
             checkCommand();
 

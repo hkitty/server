@@ -1,9 +1,10 @@
 #include "messagecontroller.h"
 
 MessageController::MessageController()
-    : TStartReceiver(&MessageController::receiver, this), TStartParser(&MessageController::startParser, this)
+    : TStartReceiver(&MessageController::receiver, this),
+      TStartParser(&MessageController::startParser, this)
 {
-    qDebug() << "Create messageController";
+//    qDebug() << "Create messageController";
 }
 
 MessageController::~MessageController()
@@ -19,7 +20,7 @@ void MessageController::receiver() {
 
     while ( isStarted ) {
         if(socket.receive(packet, sender, port) == sf::Socket::Done) {
-            qDebug() << QString::fromStdString(sender.toString()) << " connected";
+//            qDebug() << QString::fromStdString(sender.toString()) << " connected";
             if ( !banlist->bans.contains(sender.toString()) ) {
                 queue->addTask(sender.toString(), port, packet);
             }
@@ -27,7 +28,7 @@ void MessageController::receiver() {
             packet.clear();
         }
     }
-    qDebug() << "While exit";
+//    qDebug() << "While exit";
 }
 
 void MessageController::startReceiver(int _port) {
@@ -47,7 +48,7 @@ void MessageController::startParser()
     while ( isStarted ) { //--true
 //        qDebug() << "Parser while start";
         if (!queue->Tasks.isEmpty() ) {
-            qDebug() << "";
+            qDebug();
             parser->receive(queue->getTask());
 //            qDebug() << "";
         }

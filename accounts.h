@@ -21,13 +21,13 @@ private:
 
 public:
     void addUser(std::string log, std::string pass, std::string ip, unsigned short port);
-    void newUser(std::string log, std::string pass);
+    bool newUser(std::string log, std::string pass);
     void showUsers();
 
     bool check(std::string _log, std::string _pass);
 
-    QList<User::Character> getCharacters(std::string IP);
-    bool createCharacter(std::string ip, unsigned short port, std::string characterNickname, unsigned short ClassId);
+    QList<User::Character> getCharacters(std::string ip, unsigned short port);
+    bool createCharacter(std::string ip, unsigned short port, std::string characterNickname, int ClassId);
 };
 
 #endif // ACCOUNTS_H

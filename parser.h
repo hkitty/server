@@ -5,6 +5,8 @@
 #include <task.h>
 #include <unistd.h>
 #include <accounts.h>
+#include <menuLogic.h>
+#include <gameLogic.h>
 
 class Parser
 {
@@ -32,22 +34,12 @@ private:
         DeleteCharacter,
         InGame,
         GetEnemys,
-        PlayerMove
+        PlayerMove,
+        ExitGame
     };
 
-    sf::Packet outPacket;
-    sf::UdpSocket socket;
-
-private:
-    void loginAccept(int command, std::string ip, unsigned short port);
-    void loginReject(int command, std::string ip, unsigned short port);
-    bool registration(int command, std::string ip, unsigned short port, std::string log, std::string pass);
-    void getUserCharacters(int command, std::string ip, unsigned short port);
-    void chooseUserCharacter(int command, std::string ip, unsigned short port, std::string characterNickname);
-    void newCharacter(int command, std::string ip, unsigned short port, std::string characterNickname, unsigned short characterClassID);
-    void getEnemys(std::string ip, unsigned short port);
-    void sendNewPlayer(std::string ip, unsigned short port);
-    void playerMove(int command, std::string ip, unsigned short port, sf::Vector2f vect);
+    MenuLogic *menuLogic = new MenuLogic(accounts);
+    GameLogic *gameLogic = new GameLogic(accounts);
 };
 
 #endif // PARSER_H

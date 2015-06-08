@@ -21,20 +21,20 @@ public:
     };
 
     QList<Character> characters;
-    QList<QString> nickList; //For check double nick
+    QList<QString> nickList;
 
     std::string userLog;
     std::string userPass;
     std::string userIP;
     unsigned short userPort;
-//    std::string pathToPlayer;
+
     std::string nickname;
     Player *player;
 
 public:
     int getStatus();
     void deletePlayer();
-    void newCharacter(std::string characterNickname, unsigned short characterClass);
+    void newCharacter(std::string characterNickname, int characterClass);
     void chooseCharacter(std::string characterNickname);
     void setStatus(bool _status);
 };

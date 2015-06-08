@@ -2,7 +2,7 @@
 
 BanList::BanList()
 {
-    qDebug() << "Load BanList...";
+    qDebug() << "Load banlist";
     QString msgError;
     std::string string;
 

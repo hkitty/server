@@ -33,7 +33,9 @@ SOURCES += main.cpp \
     accounts.cpp \
     player.cpp \
     user.cpp \
-    adminInterface.cpp
+    adminInterface.cpp \
+    menuLogic.cpp \
+    gameLogic.cpp
 
 CONFIG += c++11
 
@@ -47,4 +49,6 @@ HEADERS += \
     accounts.h \
     player.h \
     user.h \
-    adminInterface.h
+    adminInterface.h \
+    menuLogic.h \
+    gameLogic.h
