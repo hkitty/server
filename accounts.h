@@ -26,7 +26,7 @@ public:
 
     bool check(std::string _log, std::string _pass);
 
-    QList<User::Character> getCharacters(std::string ip, unsigned short port);
+    QList<User::Character*> getCharacters(std::string ip, unsigned short port);
     bool createCharacter(std::string ip, unsigned short port, std::string characterNickname, int ClassId);
 };
 

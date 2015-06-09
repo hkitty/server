@@ -13,7 +13,6 @@ User::User(std::string log, std::string pass, std::string ip, unsigned short por
     QString line;
     QString crutch;
     QStringList charac;
-    Character character;
 
     if ( file.exists() ) {
         if ( !file.open(QIODevice::ReadOnly) ) {
@@ -21,14 +20,14 @@ User::User(std::string log, std::string pass, std::string ip, unsigned short por
         }
 
         while ( !file.atEnd() ) {
-
+            Character *character = new Character;
 
             line = file.readLine();
             line.remove(line.size() - 1, 1);
             charac = line.split(" ");
-            character.Nickname = charac.at(0);
+            character->Nickname = charac.at(0);
             crutch = charac.at(1);
-            character.ClassId = crutch.toUShort();
+            character->ClassId = crutch.toUShort();
 
             characters.append(character);
         }
@@ -44,10 +43,10 @@ User::User(std::string log, std::string pass, std::string ip, unsigned short por
     userIP = ip;
     userPort = port;
 
-    QListIterator<Character> it(characters);
+    QListIterator<Character*> it(characters);
 
     while ( it.hasNext() ) {
-        nickList.append(it.next().Nickname);
+        nickList.append(it.next()->Nickname);
     }
 }
 
@@ -114,6 +113,15 @@ void User::newCharacter(std::string characterNickname, int characterClass)
     account.close();
 }
 
+void User::deleteCharacter(std::string nickname, unsigned short id)
+{
+    int i = 0;
+    while ( i < characters.size() ) {
+        if ( characters.at(i)->Nickname == QString::fromStdString(nickname) && characters.at(i)->ClassId == id ) {
+            characters.removeAt(i);
+        }
+    }
+}
 
 void User::chooseCharacter(std::string characterNickname)
 {

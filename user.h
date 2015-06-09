@@ -20,7 +20,7 @@ public:
         unsigned short ClassId;
     };
 
-    QList<Character> characters;
+    QList<Character*> characters;
     QList<QString> nickList;
 
     std::string userLog;
@@ -35,6 +35,7 @@ public:
     int getStatus();
     void deletePlayer();
     void newCharacter(std::string characterNickname, int characterClass);
+    void deleteCharacter(std::string nickname, unsigned short id);
     void chooseCharacter(std::string characterNickname);
     void setStatus(bool _status);
 };

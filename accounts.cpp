@@ -84,9 +84,9 @@ void Accounts::showUsers()
     }
 }
 
-QList<User::Character> Accounts::getCharacters(std::string ip, unsigned short port)
+QList<User::Character*> Accounts::getCharacters(std::string ip, unsigned short port)
 {
-    QList<User::Character> characters;
+    QList<User::Character*> characters;
 
     if ( !users.isEmpty() ) {
 
@@ -95,7 +95,6 @@ QList<User::Character> Accounts::getCharacters(std::string ip, unsigned short po
     qDebug() << "Enter getUser()";
 
         while ( it != users.end() ) {
-//            qDebug() << "Enter while";
             if ( ip != (*it)->userIP && port != (*it)->userPort ) {
 
             } else {
@@ -114,13 +113,12 @@ QList<User::Character> Accounts::getCharacters(std::string ip, unsigned short po
 bool Accounts::createCharacter(std::string ip, unsigned short port, std::string characterNickname, int ClassId)
 {
     qDebug() << "Create new character" << QString::fromStdString(characterNickname);
-    User::Character charact;
-    charact.Nickname = QString::fromStdString(characterNickname);
-    charact.ClassId = ClassId;
+    User::Character *charact = new User::Character;
+    charact->Nickname = QString::fromStdString(characterNickname);
+    charact->ClassId = ClassId;
 
     QList<User*>::iterator it = users.begin();
     while ( it != users.end() ) {
-//        qDebug() << "Enter while";
         if ( (*it)->userIP == ip && (*it)->userPort == port ) {
             (*it)->newCharacter(characterNickname, ClassId);
             (*it)->characters.append(charact);
@@ -153,7 +151,6 @@ bool Accounts::check(std::string _log, std::string _pass)
 
             if ( _log == slist.at(0).toStdString() && _pass == slist.at(1).toStdString() ) {
                 QListIterator<User*> it(users);   //--TODO uncomment
-
                 while ( it.hasNext() ) {
                     if ( _log == it.next()->userLog ) {
                         accountsFile->close();

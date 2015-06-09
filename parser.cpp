@@ -67,10 +67,14 @@ void Parser::receive(Task task)
             break;
 
             case Commands::DeleteCharacter: {
-                std::string characterNickname;
-
-                packet >> characterNickname;
-                menuLogic->deleteCharacter(command, task.sender, port, characterNickname);
+                qDebug() << "Enter del cahr";
+                std::string charactName;
+                unsigned short id;
+                std::cout << "Pack size berore: " << packet.getDataSize();
+                packet >> charactName >> id;
+                std::cout << "Pack size after: " << packet.getDataSize();
+                std::cout << "NICKNAMEEEE::: " << charactName;
+                menuLogic->deleteCharacter(command, task.sender, port, charactName, id);
             }
             break;
 
@@ -78,6 +82,7 @@ void Parser::receive(Task task)
                 bool isOk;
 
                 packet >> isOk; //--TODO Users status changing
+                command += 1;
                 gameLogic->getEnemys(command, task.sender, port);
                 gameLogic->sendNewPlayer(command, task.sender, port);
             }

@@ -14,13 +14,19 @@ void GameLogic::getEnemys(int command, std::string ip, unsigned short port)
 {
     QList<User*>::iterator it = accounts->users.begin();
     std::string characterNickname;
-
-    command += 1;
+    qDebug() << "[GL::gE] Command: " << command;
 
     while ( it != accounts->users.end() ) {
         if ( (*it)->userIP == ip && (*it)->userPort == port ) {
+            qDebug() << "[GL::gE] u ";
+            qDebug() << QString::fromStdString((*it)->userLog);
+
         } else {
+            qDebug() << "[GL::gE] not u";
+
+//            qDebug() << "NICKNAME:!!!: " << (*it)->player->nickname;
             characterNickname = (*it)->player->nickname.toStdString();
+
             outPacket << mark << command << characterNickname << (*it)->player->characterClass << (*it)->player->position.x << (*it)->player->position.y;
             socket.send(outPacket, ip, port);
 
@@ -37,8 +43,6 @@ void GameLogic::sendNewPlayer(int command, std::string ip, unsigned short port)
     QList<User*>::iterator it = accounts->users.begin();
     std::string characterNickname;
     User *user;
-
-    command += 1;
 
     while ( it != accounts->users.end() ) {
         if ( (*it)->userIP == ip && (*it)->userPort == port ) {
