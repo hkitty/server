@@ -40,8 +40,8 @@ Player::~Player()
     } else {
         QSqlQuery QSaveCharacter(*charactersDB);
 
-        QSaveCharacter.prepare("INSERT INTO Characters(hitPoints, manaPoints, positionX, positionY)"
-                               "VALUES(:hitPoints, :manaPoints, :positionX, :positionY) WHEWRE nickname=:nickname");
+        QSaveCharacter.prepare("INSERT INTO CharacterList(hitPoints, manaPoints, positionX, positionY)"
+                               "VALUES(:hitPoints, :manaPoints, :positionX, :positionY) WHERE nickname=:nickname");
         QSaveCharacter.bindValue(":hitPoints", QString::number(stats.hitPoints));
         QSaveCharacter.bindValue(":manaPoints", QString::number(stats.manaPoints));
         QSaveCharacter.bindValue(":positionX", QString::number(position.x).toFloat());
