@@ -8,35 +8,38 @@
 class User
 {
 public:
-    User();
     User(QSqlDatabase *_charactersDB, int ID, std::string ip, unsigned short port);
     ~User();
 
 public:
-    bool userStatus; //online/offline/afk
     int userID;
+
+    bool userStatus;
 
     struct Character {
         QString Nickname;
         unsigned short ClassId;
     };
 
-    QList<Character*> characters;    
-
     std::string userIP;
     unsigned short userPort;
 
     Player *player;
     QSqlDatabase *charactersDB;
+    QList<Character*> characters;
+
 
 public:
     int getStatus();
+
     void deletePlayer();
-    bool newCharacter(std::string nickname, int classID);
-    void deleteCharacter(std::string nickname, unsigned short id);
-    void chooseCharacter(std::string characterNickname);
-    QList<Character *> getCharacters();
     void setStatus(bool _status);
+    void chooseCharacter(std::string nickname);
+
+    bool removeCharacter(std::string nickname);
+    bool newCharacter(int ID, std::string nickname, int classID);
+
+    QList<Character *> getCharacters();
 
 private:
     enum Characters {

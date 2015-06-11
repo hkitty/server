@@ -13,7 +13,7 @@ GameLogic::~GameLogic()
 void GameLogic::getEnemys(int command, std::string ip, unsigned short port)
 {
     QList<User*>::iterator it = accounts->users.begin();
-    std::string characterNickname;
+    std::string nickname;
     qDebug() << "[GL::gE] Command: " << command;
 
     while ( it != accounts->users.end() ) {
@@ -25,9 +25,9 @@ void GameLogic::getEnemys(int command, std::string ip, unsigned short port)
             qDebug() << "[GL::gE] not u";
 
 //            qDebug() << "NICKNAME:!!!: " << (*it)->player->nickname;
-            characterNickname = (*it)->player->nickname.toStdString();
+            nickname = (*it)->player->nickname.toStdString();
 
-            outPacket << mark << command << characterNickname << (*it)->player->characterClass << (*it)->player->position.x << (*it)->player->position.y;
+            outPacket << mark << command << nickname << (*it)->player->classID << (*it)->player->position.x << (*it)->player->position.y;
             socket.send(outPacket, ip, port);
 
             outPacket.clear();
@@ -41,13 +41,13 @@ void GameLogic::sendNewPlayer(int command, std::string ip, unsigned short port)
     std::cout << "IP: " << ip << " Port: " << port << "\n";
 
     QList<User*>::iterator it = accounts->users.begin();
-    std::string characterNickname;
+    std::string nickname;
     User *user;
 
     while ( it != accounts->users.end() ) {
         if ( (*it)->userIP == ip && (*it)->userPort == port ) {
             user = *it;
-            characterNickname = user->player->nickname.toStdString();
+            nickname = user->player->nickname.toStdString();
 
         } else {
             //--TODO n f
@@ -57,7 +57,7 @@ void GameLogic::sendNewPlayer(int command, std::string ip, unsigned short port)
 
     it = accounts->users.begin();
 
-    outPacket << mark << command << characterNickname << user->player->characterClass << user->player->position.x << user->player->position.y;
+    outPacket << mark << command << nickname << user->player->classID << user->player->position.x << user->player->position.y;
 
     while ( it != accounts->users.end() ) {
 
@@ -71,7 +71,7 @@ void GameLogic::sendNewPlayer(int command, std::string ip, unsigned short port)
     outPacket.clear();
 }
 
-void GameLogic::playerMove(int command, std::string ip, unsigned short port, sf::Vector2f vect)
+void GameLogic::playerMove(int command, std::string ip, unsigned short port, sf::Vector2f position)
 {
     QList<User*>::iterator it = accounts->users.begin();
     std::string characterNickname;
@@ -80,17 +80,17 @@ void GameLogic::playerMove(int command, std::string ip, unsigned short port, sf:
     while ( it != accounts->users.end() ) {
         if ( (*it)->userIP == ip && (*it)->userPort == port ) {
             user = *it;
-            (*it)->player->position = vect;
+            (*it)->player->position = position;
             characterNickname = user->player->nickname.toStdString();
         } else {
             //--TODO n f
         }
         it++;
     }
-    std::cout << "ID: " << user->userID << " Vec.x: " << vect.x << " Vec.y: " << vect.y << "\n";
+    std::cout << "ID: " << user->userID << " Vec.x: " << position.x << " Vec.y: " << position.y << "\n";
 
     it = accounts->users.begin();
-    outPacket << mark << command << characterNickname << vect.x << vect.y;
+    outPacket << mark << command << characterNickname << position.x << position.y;
 
     while ( it != accounts->users.end() ) {
         if ( (*it)->userIP == ip && (*it)->userPort == port ) {
@@ -103,7 +103,7 @@ void GameLogic::playerMove(int command, std::string ip, unsigned short port, sf:
     outPacket.clear();
 }
 
-void GameLogic::playerAttack(int command, std::string, unsigned short port)
+void GameLogic::playerAttack(int command, std::string ip, unsigned short port)
 {
 //    QList<User*>::iterator it = accounts->users.begin();
 //    User *user;

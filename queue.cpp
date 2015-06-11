@@ -19,8 +19,6 @@ void Queue::addTask(std::string _sender, unsigned short _port, sf::Packet _packe
     task->packet = _packet;
 
     Tasks.enqueue(*task);
-//    qDebug() << Tasks.size() << " size tasks";
-//    qDebug() << QString::fromStdString(_sender) << ":" << _port;
     delete task;
 }
 

@@ -20,9 +20,10 @@ public:
 
 public:
     void setPort(int _port);
-    void setRootLogin(QString login);
-    void setRootPass(QString pass);
     void setMark(int _mark);
+    void setRootLogin(QString login);
+    void setRootPass(QString password);
+
     int getMark();
     int getPort();
 

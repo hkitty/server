@@ -22,14 +22,14 @@ public:
     bool add(std::string ip, std::string nickname);
     bool add(std::string ip, std::string nickname, std::string reason);
     bool check(std::string ip);
+
     void del(std::string ip);
     void showBans();
 
 private:
-    QFile *banListFile = new QFile(QDir::currentPath() + "/BanList.txt");
     QSqlDatabase *accountsDB;
     QDateTime dateTime;
-    void load();
+
     enum Banlist {
         IP,
         Time,

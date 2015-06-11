@@ -79,7 +79,7 @@ void AdminInterface::checkCommand()
         } else if ( command == "showbans" || command == "showBans" || command == "banlist" ) {
             msgCntr->parser->accounts->banlist->showBans();
 
-        } else if ( command == "showusers" || command == "showUsers"  ) {
+        } else if ( command == "showusers" || command == "showUsers" || command == "online" || command == "Online"  ) {
             msgCntr->parser->accounts->showUsers();
 
         } else if ( command == "SetPort" || command == "setport" || command == "Setport" || command == "setPort") {

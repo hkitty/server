@@ -63,13 +63,13 @@ void MenuLogic::getUserCharacters(int command, std::string ip, unsigned short po
     outPacket.clear();
 }
 
-void MenuLogic::registration(int command, std::string ip, unsigned short port, std::string log, std::string pass)
+void MenuLogic::registration(int command, std::string ip, unsigned short port, std::string log, std::string password)
 {
     bool isRegistered;
 
     outPacket << mark << command;
 
-    if ( !accounts->newUser(log, pass, ip, port) ) {
+    if ( !accounts->newUser(log, password, ip, port) ) {
         isRegistered = false;
     } else {
         isRegistered = true;
@@ -81,27 +81,27 @@ void MenuLogic::registration(int command, std::string ip, unsigned short port, s
     outPacket.clear();
 }
 
-void MenuLogic::chooseUserCharacter(int command, std::string ip, unsigned short port, std::string characterNickname)
+void MenuLogic::chooseUserCharacter(int command, std::string ip, unsigned short port, std::string nickname)
 {
     QList<User*>::iterator it = accounts->users.begin();
     Player::Stats stats;
     sf::Vector2f pos;
 
-    unsigned short characterClassID;
-    outPacket << mark << command << characterNickname;
+    unsigned short classID;
+    outPacket << mark << command << nickname;
 
     while ( it != accounts->users.end() ) {
         if ( (*it)->userIP == ip && (*it)->userPort == port ) {
-            (*it)->chooseCharacter(characterNickname);
+            (*it)->chooseCharacter(nickname);
             stats = (*it)->player->stats;
-            characterClassID = (*it)->player->characterClass;
+            classID = (*it)->player->classID;
             pos = (*it)->player->position;
         } else {
 
         }
         it++;
     }
-    outPacket << characterClassID << pos.x << pos.y << stats.attack << stats.defence << stats.hitPoints << stats.manaPoints;
+    outPacket << classID << pos.x << pos.y << stats.attack << stats.defence << stats.hitPoints << stats.manaPoints;
     socket.send(outPacket, ip, port);
 
     outPacket.clear();
@@ -167,9 +167,9 @@ bool MenuLogic::deleteFromUserFiles(std::string ip, unsigned short port, std::st
 //    return true;
 }
 
-void MenuLogic::deleteFromCharacters(std::string userLogin, std::string characterNickname)
+void MenuLogic::deleteFromCharacters(std::string login, std::string characterNickname)
 {
-    QString pathToCharacter = QDir::currentPath() + "/Characters/" + QString::fromStdString(userLogin) + "_" + QString::fromStdString(characterNickname) + ".txt";
+    QString pathToCharacter = QDir::currentPath() + "/Characters/" + QString::fromStdString(login) + "_" + QString::fromStdString(characterNickname) + ".txt";
     QFile file(pathToCharacter);
     if ( !file.remove() ) {
         qDebug() << "CharacterFile remove error";
@@ -178,11 +178,11 @@ void MenuLogic::deleteFromCharacters(std::string userLogin, std::string characte
     }
 }
 
-void MenuLogic::deleteCharacter(int command, std::string ip, unsigned short port, std::string characterNickname, unsigned short id)
+void MenuLogic::deleteCharacter(int command, std::string ip, unsigned short port, std::string nickname, unsigned short ID)
 {
     bool isDeleted;
     outPacket << mark << command;
-    if ( deleteFromUserFiles(ip, port, characterNickname, id) ) {
+    if ( deleteFromUserFiles(ip, port, nickname, ID) ) {
         isDeleted = true;
     } else {
         isDeleted = false;
@@ -198,12 +198,12 @@ void MenuLogic::deleteCharacter(int command, std::string ip, unsigned short port
     }
 }
 
-void MenuLogic::newCharacter(int command, std::string ip, unsigned short port, std::string characterNickname, int characterClassID)
+void MenuLogic::newCharacter(int command, std::string ip, unsigned short port, std::string nickname, int classID)
 {
     bool isCreated;
 
     outPacket << mark << command;
-    if ( accounts->createCharacter(ip, port, characterNickname, characterClassID) ) {
+    if ( accounts->createCharacter(ip, port, nickname, classID) ) {
         isCreated = true;
     } else {
         isCreated = false;

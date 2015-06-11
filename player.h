@@ -10,13 +10,12 @@
 class Player
 {
 public:
-    Player(QSqlDatabase *_charactersDB, std::string characterNickname);
+    Player(QSqlDatabase *_charactersDB, std::string _nickname);
     ~Player();
 
 public:
     QString nickname;
-    bool inFight;
-    unsigned short characterClass;
+    unsigned short classID;
 
     struct Stats {
         unsigned short hitPoints;
@@ -27,9 +26,13 @@ public:
 
     sf::Vector2f position;
 
+    bool inFight;
+
 public:
     QTimer *timer = new QTimer;
+
     sf::Thread TStartAttack;
+
 public:
     void attack();
 

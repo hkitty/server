@@ -45,10 +45,10 @@ HEADERS += \
     banlist.h \
     queue.h \
     task.h \
-    messagecontroller.h \
     accounts.h \
     player.h \
     user.h \
     adminInterface.h \
     menuLogic.h \
-    gameLogic.h
+    gameLogic.h \
+    messageController.h

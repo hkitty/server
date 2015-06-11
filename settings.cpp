@@ -26,9 +26,9 @@ void Settings::setRootLogin(QString login)
     rootLog = login;
 }
 
-void Settings::setRootPass(QString pass)
+void Settings::setRootPass(QString password)
 {
-    rootPass = pass;
+    rootPass = password;
 }
 
 int Settings::getMark()

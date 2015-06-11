@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player(QSqlDatabase *_charactersDB, std::string characterNickname) :
+Player::Player(QSqlDatabase *_charactersDB, std::string _nickname) :
     TStartAttack(&Player::attack, this)
 {
 
@@ -13,14 +13,15 @@ Player::Player(QSqlDatabase *_charactersDB, std::string characterNickname) :
     QSqlQuery QLoadCharacter(*charactersDB);
 
     QLoadCharacter.prepare("SELECT * FROM CharacterList WHERE nickname=:nickname");
-    QLoadCharacter.bindValue(":nickname", QString::fromStdString(characterNickname));
+    QLoadCharacter.bindValue(":nickname", QString::fromStdString(_nickname));
 
         if ( !QLoadCharacter.exec() ) {
             qDebug() << "Load character error: " << QLoadCharacter.lastError().text();
+            charactersDB->close();
         } else {
             while ( QLoadCharacter.next() ) {
                 nickname = QLoadCharacter.value(Character::Nickname).toString();
-                characterClass = QLoadCharacter.value(Character::ClassID).toUInt();
+                classID = QLoadCharacter.value(Character::ClassID).toUInt();
                 stats.hitPoints = QLoadCharacter.value(Character::HitPoints).toUInt();
                 stats.manaPoints = QLoadCharacter.value(Character::ManaPoints).toUInt();
                 stats.attack = QLoadCharacter.value(Character::Attack).toUInt();
@@ -42,10 +43,18 @@ Player::~Player()
 
         QSaveCharacter.prepare("INSERT INTO CharacterList(hitPoints, manaPoints, positionX, positionY)"
                                "VALUES(:hitPoints, :manaPoints, :positionX, :positionY) WHERE nickname=:nickname");
+        QSaveCharacter.bindValue(":nickname", nickname);
         QSaveCharacter.bindValue(":hitPoints", QString::number(stats.hitPoints));
         QSaveCharacter.bindValue(":manaPoints", QString::number(stats.manaPoints));
         QSaveCharacter.bindValue(":positionX", QString::number(position.x).toFloat());
         QSaveCharacter.bindValue(":positionY", QString::number(position.y).toFloat());
+
+        if ( !QSaveCharacter.exec() ) {
+            qDebug() << "Character save error: " << QSaveCharacter.lastError().text();
+            charactersDB->close();
+        } else {
+            qDebug() << "Character " << nickname << " saved";
+        }
         charactersDB->close();
     }
 }

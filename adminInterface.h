@@ -3,7 +3,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <iostream>
-#include <messagecontroller.h>
+#include <messageController.h>
 #include <settings.h>
 
 class AdminInterface
@@ -16,10 +16,10 @@ public:
     void authentication();
     void checkCommand();
 
-
 private:
     std::string command;
     std::string IP;
+
     int id;
     int _port;
 

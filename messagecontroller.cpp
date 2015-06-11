@@ -1,4 +1,4 @@
-#include "messagecontroller.h"
+#include "messageController.h"
 
 MessageController::MessageController()
     : TStartReceiver(&MessageController::receiver, this),
