@@ -52,15 +52,23 @@ void AdminInterface::checkCommand()
             msgCntr->stop();
 
         } else if ( command == "Ban" || command == "ban" ) {
+            std::string nickname;
+            std::string reason;
             std::cout << "Enter IP: ";
             std::cin >> IP;
-            std::cout << IP << " IP banned" << std::endl;
-            msgCntr->banlist->add(IP);
+            std::cout << "Enter nickname: ";
+            std::cin >> nickname;
+            std::cout << "Enter reason: ";
+            std::cin >> reason;
+            msgCntr->parser->accounts->banlist->add(IP, nickname, reason);
+
+        } else if ( command == "showAll" || command == "showall" || command == "sa" ) {
+            msgCntr->parser->accounts->showAllUsers();
 
         } else if ( command == "unban" || command == "Unban" ) {
             std::cout << " Enter IP: ";
             std::cin >> IP;
-            msgCntr->banlist->del(IP);
+            msgCntr->parser->accounts->banlist->del(IP);
 
         } else if ( command == "kick" || command == "Kick" ) {
             std::cout << "Enter ID: ";
@@ -69,7 +77,7 @@ void AdminInterface::checkCommand()
             msgCntr->parser->kickUser(userID);
 
         } else if ( command == "showbans" || command == "showBans" || command == "banlist" ) {
-            msgCntr->banlist->showBans();
+            msgCntr->parser->accounts->banlist->showBans();
 
         } else if ( command == "showusers" || command == "showUsers"  ) {
             msgCntr->parser->accounts->showUsers();

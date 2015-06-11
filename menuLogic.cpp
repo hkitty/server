@@ -12,37 +12,52 @@ MenuLogic::~MenuLogic()
 
 void MenuLogic::checkLogin(int command, std::string ip, unsigned short port, std::string login, std::string password)
 {
-    if ( accounts->check(login, password) ) {
-        accounts->addUser(login, password, ip, port);
-        loginAccept(command, ip, port);
-    } else {
+    int ID = accounts->check(login, password);
+    if ( ID < 0 ) {
         loginReject(command, ip, port);
+    } else {
+        accounts->addUser(ID, ip, port);
+        loginAccept(command, ip, port);
     }
 }
 
 void MenuLogic::getUserCharacters(int command, std::string ip, unsigned short port)
 {
-    QList<User::Character*> characters;
-    characters = accounts->getCharacters(ip, port);
-    qDebug() << "Characters size out: " << characters.size();
 
-    QList<User::Character*>::iterator it = characters.begin();
-    QString characterName;
-    unsigned short characterClass;
+    int ID = accounts->getUserID(ip, port);
 
-    outPacket << mark << command << characters.size();
+    if ( ID < 0 ) {
+        qDebug() << "[ML:gUC] Characters not found";
+        outPacket << mark << command << 0;
+        socket.send(outPacket, ip, port);
+    } else {
 
-        while ( it != characters.end() ) {
-            characterName = (*it)->Nickname;
-            qDebug() << "Char name: " << characterName;
-            characterClass = (*it)->ClassId;
-            std::cout << "Char class: " << characterClass << "\n";
+        if ( accounts->users.at(ID)->getCharacters().size() <= 0 ) {
+            qDebug() << "Characters empty";
+            outPacket << mark << command << 0;
+        } else {
 
-            outPacket << characterName.toStdString() << characterClass;
-            it++;
+        QList<User::Character*> characters;
+        qDebug() << "Characters size out: " << characters.size();
+
+        QList<User::Character*>::iterator it = characters.begin();
+        QString characterName;
+        unsigned short characterClass;
+
+        outPacket << mark << command << characters.size();
+
+            while ( it != characters.end() ) {
+                characterName = (*it)->Nickname;
+                qDebug() << "Char name: " << characterName;
+                characterClass = (*it)->ClassId;
+                std::cout << "Char class: " << characterClass << "\n";
+
+                outPacket << characterName.toStdString() << characterClass;
+                it++;
+            }
         }
-
-    socket.send(outPacket, ip, port);
+        socket.send(outPacket, ip, port);
+    }
     qDebug() << "Send characters to: " << QString::fromStdString(ip) << ":" << port;
 
     outPacket.clear();
@@ -51,21 +66,13 @@ void MenuLogic::getUserCharacters(int command, std::string ip, unsigned short po
 void MenuLogic::registration(int command, std::string ip, unsigned short port, std::string log, std::string pass)
 {
     bool isRegistered;
+
     outPacket << mark << command;
-    if ( log.size() != 0 && pass.size() != 0 ) { //--TODO Check double nickname
-        if ( !accounts->accLogins.contains(QString::fromStdString(log)) ) {
-            if ( !accounts->newUser(log, pass) ) {
-                isRegistered = false;
-            } else {
-                isRegistered = true;
-            }
-        } else {
-            qDebug() << "This username is already used"; //--TODO Send error to sender
-            isRegistered = false;
-        }
-    } else {
-        qDebug() << "Incorrect login or passworg [Log or pass ..size() == 0]";
+
+    if ( !accounts->newUser(log, pass, ip, port) ) {
         isRegistered = false;
+    } else {
+        isRegistered = true;
     }
 
     outPacket << isRegistered;
@@ -102,62 +109,62 @@ void MenuLogic::chooseUserCharacter(int command, std::string ip, unsigned short 
 
 bool MenuLogic::deleteFromUserFiles(std::string ip, unsigned short port, std::string nickname, unsigned short id)
 {
-    std::string userLogin;
-    QStringList strList;
-    QStringList accs;
-    int i = 0;
-    QList<User*>::iterator it = accounts->users.begin();
-    while ( it != accounts->users.end() ) {
-        if ( (*it)->userIP == ip && (*it)->userPort == port ) {
-            userLogin = (*it)->userLog;
-            (*it)->deleteCharacter(nickname, id);
-        } else {
-            qDebug() << "User not found";
-        }
-        it++;
-    }
+//    std::string userLogin;
+//    QStringList strList;
+//    QStringList accs;
+//    int i = 0;
+//    QList<User*>::iterator it = accounts->users.begin();
+//    while ( it != accounts->users.end() ) {
+//        if ( (*it)->userIP == ip && (*it)->userPort == port ) {
+//            userLogin = (*it)->userLog;
+//            (*it)->deleteCharacter(nickname, id);
+//        } else {
+//            qDebug() << "User not found";
+//        }
+//        it++;
+//    }
 
 
-    QString pathToAccount = QDir::currentPath() + "/Accounts/" + QString::fromStdString(userLogin) + ".txt";
-    qDebug() << "Path to delete account: " << pathToAccount;
+//    QString pathToAccount = QDir::currentPath() + "/Accounts/" + QString::fromStdString(userLogin) + ".txt";
+//    qDebug() << "Path to delete account: " << pathToAccount;
 
-    QFile accFile(pathToAccount);
+//    QFile accFile(pathToAccount);
 
-    if ( !accFile.open(QIODevice::ReadOnly) ) {
-        qDebug() << "File open error";
-        return false;
-    } else {
-        QString line;
-        QList<QString>::iterator it = strList.begin();
+//    if ( !accFile.open(QIODevice::ReadOnly) ) {
+//        qDebug() << "File open error";
+//        return false;
+//    } else {
+//        QString line;
+//        QList<QString>::iterator it = strList.begin();
 
-        while ( it != strList.end() ) {
-            line = accFile.readLine();
-            line = line.remove(line.size() - 1, 1);
-            strList = line.split(" ");
-                if ( strList.at(0) != QString::fromStdString(nickname) ) {
+//        while ( it != strList.end() ) {
+//            line = accFile.readLine();
+//            line = line.remove(line.size() - 1, 1);
+//            strList = line.split(" ");
+//                if ( strList.at(0) != QString::fromStdString(nickname) ) {
 
-                } else {
-                    accs.append(line);
-                }
-         it++;
-        }
-        accFile.close();
+//                } else {
+//                    accs.append(line);
+//                }
+//         it++;
+//        }
+//        accFile.close();
 
-        if ( !accFile.open(QIODevice::WriteOnly | QIODevice::Truncate) ) {
-            qDebug() << "Rewrite error";
-            return false;
-        } else {
-            while ( i < accs.size() ) {
-                accFile.write(accs.at(i).toUtf8());
-                i++;
-            }
-            accFile.close();
+//        if ( !accFile.open(QIODevice::WriteOnly | QIODevice::Truncate) ) {
+//            qDebug() << "Rewrite error";
+//            return false;
+//        } else {
+//            while ( i < accs.size() ) {
+//                accFile.write(accs.at(i).toUtf8());
+//                i++;
+//            }
+//            accFile.close();
 
-            deleteFromCharacters(userLogin, nickname);
-            return true;
-        }
-    }
-    return true;
+//            deleteFromCharacters(userLogin, nickname);
+//            return true;
+//        }
+//    }
+//    return true;
 }
 
 void MenuLogic::deleteFromCharacters(std::string userLogin, std::string characterNickname)

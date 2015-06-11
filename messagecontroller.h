@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <parser.h>
 #include <queue.h>
-#include <banlist.h>
 #include <accounts.h>
 
 class MessageController
@@ -23,7 +22,6 @@ public:
 public:
     Parser *parser = new Parser;
     Queue *queue = new Queue;
-    BanList *banlist = new BanList;
 
 private:
     unsigned short port;

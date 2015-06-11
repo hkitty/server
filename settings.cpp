@@ -43,25 +43,25 @@ int Settings::getPort()
 
 void Settings::checkResources()
 {
-    if ( !QDir("Accounts").exists() ) {
-        QDir().mkdir("Accounts");
-    }
+//    if ( !QDir("Accounts").exists() ) {
+//        QDir().mkdir("Accounts");
+//    }
 
-    if ( !QDir("Characters").exists() ) {
-        QDir().mkdir("Characters");
-    }
+//    if ( !QDir("Characters").exists() ) {
+//        QDir().mkdir("Characters");
+//    }
 
-    if ( !QFile(QDir::currentPath() + "/AccountsList.txt").exists() ) {
-        QFile file(QDir::currentPath() + "/AccountsList.txt");
-        file.open(QIODevice::WriteOnly);
-        file.close();
-    }
+//    if ( !QFile(QDir::currentPath() + "/AccountsList.txt").exists() ) {
+//        QFile file(QDir::currentPath() + "/AccountsList.txt");
+//        file.open(QIODevice::WriteOnly);
+//        file.close();
+//    }
 
-    if ( !QFile(QDir::currentPath() + "/BanList.txt").exists() ) {
-        QFile file(QDir::currentPath() + "/BanList.txt");
-        file.open(QIODevice::WriteOnly);
-        file.close();
-    }
+//    if ( !QFile(QDir::currentPath() + "/BanList.txt").exists() ) {
+//        QFile file(QDir::currentPath() + "/BanList.txt");
+//        file.open(QIODevice::WriteOnly);
+//        file.close();
+//    }
 }
 
 

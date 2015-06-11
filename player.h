@@ -5,11 +5,12 @@
 #include <QDir>
 #include <QTimer>
 #include <SFML/Graphics.hpp>
+#include <QtSql>
 
 class Player
 {
 public:
-    Player(std::string characterNickname, std::string login);
+    Player(QSqlDatabase *_charactersDB, std::string characterNickname);
     ~Player();
 
 public:
@@ -31,6 +32,20 @@ public:
     sf::Thread TStartAttack;
 public:
     void attack();
+
+private:
+    QSqlDatabase *charactersDB;
+    enum Character {
+        ID,
+        Nickname,
+        ClassID,
+        HitPoints,
+        ManaPoints,
+        Attack,
+        Defence,
+        PositionX,
+        PositionY
+    };
 };
 
 #endif // PLAYER_H

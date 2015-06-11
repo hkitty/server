@@ -5,48 +5,39 @@ User::User()
 
 }
 
-User::User(std::string log, std::string pass, std::string ip, unsigned short port)
+User::User(QSqlDatabase *_charactersDB, int ID, std::string ip, unsigned short port)
 {
-    qDebug() << "Load user: " << QString::fromStdString(log);
-    QFile file(QDir::currentPath() + "/Accounts/" + QString::fromStdString(log) + ".txt");
+    charactersDB = _charactersDB;
 
-    QString line;
-    QString crutch;
-    QStringList charac;
+    qDebug() << "Loading user " << QString::number(ID) << "...";
 
-    if ( file.exists() ) {
-        if ( !file.open(QIODevice::ReadOnly) ) {
-            qDebug() << "F N O [users]";
-        }
-
-        while ( !file.atEnd() ) {
-            Character *character = new Character;
-
-            line = file.readLine();
-            line.remove(line.size() - 1, 1);
-            charac = line.split(" ");
-            character->Nickname = charac.at(0);
-            crutch = charac.at(1);
-            character->ClassId = crutch.toUShort();
-
-            characters.append(character);
-        }
-
-    } else {
-        qDebug() << "User file not found";
-    }
-
-    file.close();
-
-    userLog = log;
-    userPass = pass;
+    userID = ID;
     userIP = ip;
     userPort = port;
 
-    QListIterator<Character*> it(characters);
+    //--TODO Add new Character, load character nickname and classID, while ( hasNext() ) { add Character to characterList }
 
-    while ( it.hasNext() ) {
-        nickList.append(it.next()->Nickname);
+    if ( !charactersDB->open() ) {
+        qDebug() << "[U:U]CharactersDB open error: " << charactersDB->lastError().text();
+    } else {
+        QSqlQuery QLoadCharacters(*charactersDB);
+
+        QLoadCharacters.prepare("SELECT * FROM CharacterList WHERE ID=:ID");
+        QLoadCharacters.bindValue(":ID", QString::number(ID));
+
+        if ( !QLoadCharacters.exec() ) {
+            qDebug() << "Load characters error: " << QLoadCharacters.lastError().text();
+        } else {
+            while ( QLoadCharacters.next() ) {
+                Character *character = new Character;
+                character->Nickname = QLoadCharacters.value(Characters::Nickname).toString();
+                character->ClassId  = QLoadCharacters.value(Characters::ClassID).toUInt();
+                qDebug() << "Character ID: " << character->ClassId;
+                qDebug() << "Character nickname: " << character->Nickname;
+                characters.append(character);
+            }
+        }
+        charactersDB->close();
     }
 }
 
@@ -67,50 +58,27 @@ void User::deletePlayer()
     delete player;
 }
 
-void User::newCharacter(std::string characterNickname, int characterClass)
+bool User::newCharacter(std::string nickname, int classID)
 {
-    qDebug() << "Character class: " << characterClass;
-    QString pathToCharacter = QDir::currentPath() + "/Characters/" + QString::fromStdString(userLog) + "_" + QString::fromStdString(characterNickname) + ".txt";
-    QString pathToAccount = QDir::currentPath() + "/Accounts/" + QString::fromStdString(userLog) + ".txt";
-
-
-    QFile character(pathToCharacter);
-    if ( !character.exists() ) {
-        qDebug() << "File not found [OK]";
-        if ( !character.open(QIODevice::WriteOnly)) {
-                qDebug() << "Character create error";
-            }
-            QTextStream out(&character);
-
-            out << QString::number(characterClass);
-            out.flush();
-            out << "\n100";
-            out.flush();
-            out << "\n100";
-            out.flush();
-            out << "\n12";
-            out.flush();
-            out << "\n4";
-            out.flush();
-            out << "\n100";
-            out.flush();
-            out << "\n100";
-            out.flush();
-
-            character.close();
-    } else {
-        qDebug() << "Nickname used";
+    if ( !charactersDB->open() ) {
+        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
+        return false;
     }
 
-    QFile account(pathToAccount);
-    if ( !account.open(QIODevice::Append) ) {
-        qDebug() << "Account character append error";
+    QSqlQuery QNewCharacter(*charactersDB);
+
+    QNewCharacter.prepare("INSERT INTO CharacterList(nickname, classID" "VALUES(:nickname, :classID)");
+    QNewCharacter.bindValue(":nickname", QString::fromStdString(nickname));
+    QNewCharacter.bindValue(":classID", QString::number(classID));
+
+    if ( !QNewCharacter.exec() ) {
+        qDebug() << "Create new character error: " << QNewCharacter.lastError().text();
+        charactersDB->close();
+        return false;
     }
-
-    QTextStream outAcc(&account);
-    outAcc << QByteArray::fromStdString(characterNickname) + " " + QByteArray::number(characterClass);
-
-    account.close();
+    qDebug() << "Character " << QString::fromStdString(nickname) << " created";
+    charactersDB->close();
+    return true;
 }
 
 void User::deleteCharacter(std::string nickname, unsigned short id)
@@ -126,7 +94,36 @@ void User::deleteCharacter(std::string nickname, unsigned short id)
 void User::chooseCharacter(std::string characterNickname)
 {
     std::cout << "[User::chooseCharacter] Char nickname: " << characterNickname << "\n";
-    player = new Player(characterNickname, userLog);
+    player = new Player(charactersDB, characterNickname);
+}
+
+QList<User::Character *> User::getCharacters()
+{
+    return characters;
+//    QList<User::Character*> chars;
+
+//    if ( !charactersDB->open() ) {
+//        qDebug() << "[U:gC] CharactersDB open error: " << charactersDB->lastError().text();
+//        return characters;
+//    }
+
+//    QSqlQuery QGetCharacters(*charactersDB);
+
+//    QGetCharacters.prepare("SELECT * FROM CharacterList WHERE ID=:ID");
+//    QGetCharacters.bindValue(":ID", QString::number(ID));
+
+//    if ( !QGetCharacters.exec() ) {
+//        qDebug() << "Get characters error: " << QGetCharacters.lastError().text();
+//    } else {
+//        int i = 0;
+//        while ( QGetCharacters.next() ) {
+//            chars.at(i)->Nickname = QGetCharacters.value(Characters::Nickname).toString();
+//            chars.at(i)->ClassId = QGetCharacters.value(Characters::ClassID).toUInt();
+//            i++;
+//        }
+//        charactersDB->close();
+//        return chars;
+//    }
 }
 
 void User::setStatus(bool _status)

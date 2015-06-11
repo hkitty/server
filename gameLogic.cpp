@@ -19,7 +19,7 @@ void GameLogic::getEnemys(int command, std::string ip, unsigned short port)
     while ( it != accounts->users.end() ) {
         if ( (*it)->userIP == ip && (*it)->userPort == port ) {
             qDebug() << "[GL::gE] u ";
-            qDebug() << QString::fromStdString((*it)->userLog);
+            qDebug() << (*it)->player->nickname;
 
         } else {
             qDebug() << "[GL::gE] not u";
@@ -121,6 +121,8 @@ void GameLogic::playerAttack(int command, std::string, unsigned short port)
 
 void GameLogic::deattach(std::string ip, unsigned short port)
 {
+    accounts->setStatus(ip, port, 0);
+
     QList<User*>::iterator it = accounts->users.begin();
     unsigned short userID;
 

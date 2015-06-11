@@ -21,7 +21,7 @@ void MessageController::receiver() {
     while ( isStarted ) {
         if(socket.receive(packet, sender, port) == sf::Socket::Done) {
 //            qDebug() << QString::fromStdString(sender.toString()) << " connected";
-            if ( !banlist->bans.contains(sender.toString()) ) {
+            if ( !parser->accounts->banlist->bans.contains(sender.toString()) ) {
                 queue->addTask(sender.toString(), port, packet);
             }
 

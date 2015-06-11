@@ -3,41 +3,53 @@
 #include <iostream>
 #include <player.h>
 #include <QDebug>
+#include <QtSql>
 
 class User
 {
 public:
     User();
-    User(std::string log, std::string pass, std::string ip, unsigned short port);
+    User(QSqlDatabase *_charactersDB, int ID, std::string ip, unsigned short port);
     ~User();
 
 public:
     bool userStatus; //online/offline/afk
-    unsigned short userID;
+    int userID;
 
     struct Character {
         QString Nickname;
         unsigned short ClassId;
     };
 
-    QList<Character*> characters;
-    QList<QString> nickList;
+    QList<Character*> characters;    
 
-    std::string userLog;
-    std::string userPass;
     std::string userIP;
     unsigned short userPort;
 
-    std::string nickname;
     Player *player;
+    QSqlDatabase *charactersDB;
 
 public:
     int getStatus();
     void deletePlayer();
-    void newCharacter(std::string characterNickname, int characterClass);
+    bool newCharacter(std::string nickname, int classID);
     void deleteCharacter(std::string nickname, unsigned short id);
     void chooseCharacter(std::string characterNickname);
+    QList<Character *> getCharacters();
     void setStatus(bool _status);
+
+private:
+    enum Characters {
+        ID,
+        Nickname,
+        ClassID,
+        HitPoints,
+        ManaPoints,
+        Attack,
+        Defence,
+        PositionX,
+        PositionY
+    };
 };
 
 #endif // USERS_H

@@ -85,6 +85,7 @@ void Parser::receive(Task task)
                 command += 1;
                 gameLogic->getEnemys(command, task.sender, port);
                 gameLogic->sendNewPlayer(command, task.sender, port);
+                accounts->setStatus(task.sender, port, 1);
             }
             break;
 

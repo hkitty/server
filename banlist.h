@@ -6,23 +6,36 @@
 #include <QDebug>
 #include <QFile>
 #include <QDir>
+#include <QDateTime>
+#include <QtSql>
+
 class BanList
 {
 public:
-    BanList();
+    BanList(QSqlDatabase *_accountDB);
     ~BanList();
 
 public:
     QList<std::string> bans;
 
 public:
-    void add(std::string userIP);
-    bool check(std::string userIP);
-    void del(std::string userIP);
+    bool add(std::string ip, std::string nickname);
+    bool add(std::string ip, std::string nickname, std::string reason);
+    bool check(std::string ip);
+    void del(std::string ip);
     void showBans();
 
 private:
     QFile *banListFile = new QFile(QDir::currentPath() + "/BanList.txt");
+    QSqlDatabase *accountsDB;
+    QDateTime dateTime;
+    void load();
+    enum Banlist {
+        IP,
+        Time,
+        Nickname,
+        Reason
+    };
 };
 
 #endif // BANLIST_H
