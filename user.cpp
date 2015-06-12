@@ -106,6 +106,14 @@ void User::chooseCharacter(std::string nickname)
 
 QList<User::Character *> User::getCharacters()
 {
+    QList<User::Character* >::iterator it = characters.begin();
+
+    while ( it != characters.end() ) {
+        qDebug() << "it: " << *it;
+        qDebug() << "ID: " << (*it)->ClassId;
+        qDebug() << "nickname: " << (*it)->Nickname;
+    it++;
+    }
     return characters;
 //    QList<User::Character*> chars;
 
@@ -130,7 +138,7 @@ QList<User::Character *> User::getCharacters()
 //        }
 //        charactersDB->close();
 //        return chars;
-//    }
+    //    }
 }
 
 void User::setStatus(bool _status)

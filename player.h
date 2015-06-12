@@ -4,7 +4,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QTimer>
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Shape.hpp>
+#include <SFML/System/Thread.hpp>
 #include <QtSql>
 
 class Player

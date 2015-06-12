@@ -31,8 +31,9 @@ void MenuLogic::getUserCharacters(int command, std::string ip, unsigned short po
         outPacket << mark << command << 0;
         socket.send(outPacket, ip, port);
     } else {
-
-        if ( accounts->users.at(ID)->getCharacters().size() <= 0 ) {
+        QList<User::Character *> chars;
+        chars = accounts->users.at(ID)->getCharacters();
+        if ( chars.size() <= 0 ) {
             qDebug() << "Characters empty";
             outPacket << mark << command << 0;
         } else {

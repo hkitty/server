@@ -157,12 +157,13 @@ bool Accounts::createCharacter(std::string ip, unsigned short port, std::string 
 
 int Accounts::getUserID(std::string ip, unsigned short port)
 {
-
     QList<User*>::iterator it = users.begin();
 
     while ( it != users.end() ) {
         if ( (*it)->userIP == ip && (*it)->userPort == port ) {
-            return (*it)->userID;
+            int index = it - users.begin();
+            qDebug() << "Return ID: " << index;
+            return index;
         }
     it ++;
     }

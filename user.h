@@ -39,7 +39,7 @@ public:
     bool removeCharacter(std::string nickname);
     bool newCharacter(int ID, std::string nickname, int classID);
 
-    QList<Character *> getCharacters();
+    QList<User::Character *> getCharacters();
 
 private:
     enum Characters {

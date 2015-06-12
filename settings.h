@@ -1,10 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <qfile.h>
-#include <qtextstream.h>
 #include <QDebug>
-#include <QDir>
 
 class Settings
 {

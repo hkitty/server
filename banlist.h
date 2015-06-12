@@ -4,8 +4,6 @@
 #include <user.h>
 #include <QList>
 #include <QDebug>
-#include <QFile>
-#include <QDir>
 #include <QDateTime>
 #include <QtSql>
 
