@@ -20,6 +20,7 @@ void MessageController::receiver() {
 
     while ( isStarted ) {
         if(socket.receive(packet, sender, port) == sf::Socket::Done) {
+            qDebug() << "Packet size in: " << packet.getDataSize();
 //            qDebug() << QString::fromStdString(sender.toString()) << " connected";
             if ( !parser->accounts->banlist->bans.contains(sender.toString()) ) {
                 queue->addTask(sender.toString(), port, packet);

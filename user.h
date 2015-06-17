@@ -33,6 +33,7 @@ public:
     int getStatus();
 
     void deletePlayer();
+    void reloadCharacters();
     void setStatus(bool _status);
     void chooseCharacter(std::string nickname);
 

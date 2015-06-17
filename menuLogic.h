@@ -21,8 +21,8 @@ public:
 private:
     void loginAccept(int command, std::string ip, unsigned short port);
     void loginReject(int command, std::string ip, unsigned short port);
-    void deleteFromCharacters(std::string login, std::string nickname);
-    bool deleteFromUserFiles(std::string ip, unsigned short port, std::string nickname, unsigned short id);
+
+    bool deleteUser(std::string ip, unsigned short port, std::string nickname, unsigned short id);
 
 private:
     unsigned short const mark = 1337;

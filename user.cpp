@@ -12,9 +12,9 @@ User::User(QSqlDatabase *_charactersDB, int ID, std::string ip, unsigned short p
 
     //--TODO Add new Character, load character nickname and classID, while ( hasNext() ) { add Character to characterList }
 
-    if ( !charactersDB->open() ) {
-        qDebug() << "[U:U]CharactersDB open error: " << charactersDB->lastError().text();
-    } else {
+//    if ( !charactersDB->open() ) {
+//        qDebug() << "[U:U]CharactersDB open error: " << charactersDB->lastError().text();
+//    } else {
         QSqlQuery QLoadCharacters(*charactersDB);
 
         QLoadCharacters.prepare("SELECT * FROM CharacterList WHERE ID=:ID");
@@ -33,15 +33,15 @@ User::User(QSqlDatabase *_charactersDB, int ID, std::string ip, unsigned short p
             }
             qDebug() << "Characters size() " << characters.size();
         }
-        charactersDB->close();
-    }
+//        charactersDB->close();
+//    }
 }
 
 User::~User()
 {
-    if ( player != nullptr) {
-        delete player;
-    }
+//    if ( player != nullptr) {
+//        delete player;
+//    }
 }
 
 int User::getStatus()
@@ -56,10 +56,10 @@ void User::deletePlayer()
 
 bool User::newCharacter(int ID, std::string nickname, int classID)
 {
-    if ( !charactersDB->open() ) {
-        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
-        return false;
-    }
+//    if ( !charactersDB->open() ) {
+//        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
+//        return false;
+//    }
 
     QSqlQuery QNewCharacter(*charactersDB);
 
@@ -70,20 +70,21 @@ bool User::newCharacter(int ID, std::string nickname, int classID)
 
     if ( !QNewCharacter.exec() ) {
         qDebug() << "Create new character error: " << QNewCharacter.lastError().text();
-        charactersDB->close();
+//        charactersDB->close();
         return false;
     }
     qDebug() << "Character " << QString::fromStdString(nickname) << " created";
-    charactersDB->close();
+//    charactersDB->close();
+//    reloadCharacters();
     return true;
 }
 
 bool User::removeCharacter(std::string nickname)
 {
-    if ( !charactersDB->open() ) {
-        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
-        return false;
-    }
+//    if ( !charactersDB->open() ) {
+//        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
+//        return false;
+//    }
 
     QSqlQuery QRemoveCharacter(*charactersDB);
     QRemoveCharacter.prepare("DELETE * FROM CharacterList WHERE nickname=:nickname");
@@ -91,10 +92,10 @@ bool User::removeCharacter(std::string nickname)
 
     if ( !QRemoveCharacter.exec() ) {
         qDebug() << "Character remove error" << QRemoveCharacter.lastError().text();
-        charactersDB->close();
+//        charactersDB->close();
         return false;
     }
-    charactersDB->close();
+//    charactersDB->close();
     return true;
 }
 
@@ -109,40 +110,53 @@ QList<User::Character *> User::getCharacters()
     QList<User::Character* >::iterator it = characters.begin();
 
     while ( it != characters.end() ) {
-        qDebug() << "it: " << *it;
+        qDebug() << "it: " << (*it);
         qDebug() << "ID: " << (*it)->ClassId;
         qDebug() << "nickname: " << (*it)->Nickname;
     it++;
     }
     return characters;
-//    QList<User::Character*> chars;
-
-//    if ( !charactersDB->open() ) {
-//        qDebug() << "[U:gC] CharactersDB open error: " << charactersDB->lastError().text();
-//        return characters;
-//    }
-
-//    QSqlQuery QGetCharacters(*charactersDB);
-
-//    QGetCharacters.prepare("SELECT * FROM CharacterList WHERE ID=:ID");
-//    QGetCharacters.bindValue(":ID", QString::number(ID));
-
-//    if ( !QGetCharacters.exec() ) {
-//        qDebug() << "Get characters error: " << QGetCharacters.lastError().text();
-//    } else {
-//        int i = 0;
-//        while ( QGetCharacters.next() ) {
-//            chars.at(i)->Nickname = QGetCharacters.value(Characters::Nickname).toString();
-//            chars.at(i)->ClassId = QGetCharacters.value(Characters::ClassID).toUInt();
-//            i++;
-//        }
-//        charactersDB->close();
-//        return chars;
-    //    }
 }
 
 void User::setStatus(bool _status)
 {
     userStatus = _status;
+}
+
+void User::reloadCharacters()
+{
+    QList<Character*>::iterator it = characters.begin();
+
+    while ( it != characters.end() ) {
+        delete (*it);
+    }
+
+//    characters.clear();
+
+//    if ( !charactersDB->open() ) {
+//        qDebug() << "[U:U]CharactersDB open error: " << charactersDB->lastError().text();
+//    } else {
+
+        QSqlQuery QReloadCharacters(*charactersDB);
+
+        QReloadCharacters.prepare("SELECT * FROM CharacterList WHERE ID=:ID");
+        QReloadCharacters.bindValue(":ID", QString::number(ID));
+
+        if ( !QReloadCharacters.exec() ) {
+            qDebug() << "Load characters error: " << QReloadCharacters.lastError().text();
+        } else {
+            while ( QReloadCharacters.next() ) {
+                Character *character = new Character;
+                character->Nickname = QReloadCharacters.value(Characters::Nickname).toString();
+                character->ClassId  = QReloadCharacters.value(Characters::ClassID).toUInt();
+                qDebug() << "Character classID: " << character->ClassId;
+                qDebug() << "Character nickname: " << character->Nickname;
+                characters.append(character);
+            }
+            qDebug() << "Characters size() " << characters.size();
+        }
+//        charactersDB->close();
+//    }
+
 }
 

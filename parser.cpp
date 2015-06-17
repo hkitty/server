@@ -55,6 +55,7 @@ void Parser::receive(Task task)
 
                 packet >> characterNickname >> characterClass;
                 menuLogic->newCharacter(command, task.sender, port, characterNickname, characterClass);
+                menuLogic->getUserCharacters(Commands::GetUserCharacters, task.sender, port);
             }
             break;
 
@@ -98,7 +99,15 @@ void Parser::receive(Task task)
             break;
 
             case Commands::ExitGame: {
-                gameLogic->deattach(task.sender, port);
+                gameLogic->detach(command, task.sender, port);
+            }
+            break;
+
+            case Commands::PlayerAttack: {
+                std::string attackPlayer;
+                packet >> attackPlayer;
+                gameLogic->playerAttack(command, task.sender, port, attackPlayer);
+
             }
             break;
 

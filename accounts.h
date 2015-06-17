@@ -26,7 +26,9 @@ public:
     BanList *banlist;
 
 public:
+    bool isOnline(int ID, std::string ip, unsigned short port);
     bool addUser(int ID, std::string ip, unsigned short port);
+    bool disconnectUser(int ID);
     bool createCharacter(std::string ip, unsigned short port, std::string nickname, int classID);
     bool newUser(std::string login, std::string password, std::string ip, unsigned short port);
 
@@ -35,6 +37,8 @@ public:
 
     int check(std::string login, std::string password);
     int getUserID(std::string ip, unsigned short port);
+    int getUserListPosition(std::string ip, unsigned short port);
+    int getUserListPosition(int ID);
 
     void getStatus(std::string login);
 

@@ -6,9 +6,9 @@ Player::Player(QSqlDatabase *_charactersDB, std::string _nickname) :
 
     charactersDB = _charactersDB;
 
-    if ( !charactersDB->open() ) {
-        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
-    } else {
+//    if ( !charactersDB->open() ) {
+//        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
+//    } else {
 
     QSqlQuery QLoadCharacter(*charactersDB);
 
@@ -30,39 +30,48 @@ Player::Player(QSqlDatabase *_charactersDB, std::string _nickname) :
                 position.y = QLoadCharacter.value(Character::PositionY).toFloat();
             }
         }
-        charactersDB->close();
-    }
+//        charactersDB->close();
+//    }
 }
 
 Player::~Player()
 {
-    if ( !charactersDB->open() ) {
-        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
-    } else {
+//    if ( !charactersDB->open() ) {
+//        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
+//    } else {
         QSqlQuery QSaveCharacter(*charactersDB);
 
-        QSaveCharacter.prepare("INSERT INTO CharacterList(hitPoints, manaPoints, positionX, positionY)"
-                               "VALUES(:hitPoints, :manaPoints, :positionX, :positionY) WHERE nickname=:nickname");
-        QSaveCharacter.bindValue(":nickname", nickname);
+        QSaveCharacter.prepare("UPDATE CharacterList SET hitPoints=:hitPoints, manaPoints=:manaPoints, positionX=:positionX, positionY=:positionY WHERE nickname=:nickname");
         QSaveCharacter.bindValue(":hitPoints", QString::number(stats.hitPoints));
         QSaveCharacter.bindValue(":manaPoints", QString::number(stats.manaPoints));
         QSaveCharacter.bindValue(":positionX", QString::number(position.x).toFloat());
         QSaveCharacter.bindValue(":positionY", QString::number(position.y).toFloat());
+        QSaveCharacter.bindValue(":nickname", nickname);
 
         if ( !QSaveCharacter.exec() ) {
             qDebug() << "Character save error: " << QSaveCharacter.lastError().text();
-            charactersDB->close();
+//            charactersDB->close();
         } else {
             qDebug() << "Character " << nickname << " saved";
         }
-        charactersDB->close();
-    }
+//        charactersDB->close();
+//    }
 }
 
 void Player::attack()
 {
+    sf::Clock clock;
+
+    sf::Time time = clock.restart();
     inFight = true;
-    timer->start(10000);
+    qDebug() << "bool" << inFight;
+    while ( clock.getElapsedTime().asMilliseconds() < 5000) {
+        time = clock.getElapsedTime();
+
+        qDebug() << "Timeleft: " << time.asMilliseconds();
+    }
+
     inFight = false;
+    qDebug() << "bool" << inFight;
 }
 

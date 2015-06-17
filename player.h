@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/System/Thread.hpp>
+#include <SFML/System/Clock.hpp>
 #include <QtSql>
 
 class Player
@@ -27,10 +28,10 @@ public:
 
     sf::Vector2f position;
 
-    bool inFight;
+    bool inFight = false;
 
 public:
-    QTimer *timer = new QTimer;
+//    QTimer *timer = new QTimer;
 
     sf::Thread TStartAttack;
 
@@ -39,6 +40,7 @@ public:
 
 private:
     QSqlDatabase *charactersDB;
+
     enum Character {
         ID,
         Nickname,

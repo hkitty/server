@@ -15,6 +15,10 @@ Accounts::Accounts()
         qDebug() << "Connected";
     }
 
+    if ( !charactersDB.open() ) {
+        qDebug() << "CharactersDB open error: " << charactersDB.lastError().text();
+    }
+
     banlist = new BanList(&accountsDB);
 }
 
@@ -28,16 +32,49 @@ Accounts::~Accounts()
     charactersDB.~QSqlDatabase();
 }
 
+bool Accounts::isOnline(int ID, std::string ip, unsigned short port)
+{
+    int position = getUserListPosition(ip, port);
+
+    if ( position < 0 ) {
+        qDebug() << "User is offline";
+        return false;
+    }
+
+    return true;
+}
+
 bool Accounts::addUser(int ID, std::string ip, unsigned short port)
 {
     if ( ID < 0 ) {
         qDebug() << "Add user error: user with ID " << ID << " not found";
         return false;
     } else {
+        qDebug() << "[A:aU]ID: " << ID;
+        qDebug() << "[A:aU]ip: " << QString::fromStdString(ip);
+        qDebug() << "[A:aU]port: " << port;
         User *user = new User(&charactersDB, ID, ip, port);
         users.append(user);
         return true;
     }
+}
+
+bool Accounts::disconnectUser(int ID)
+{
+    int position = getUserListPosition(ID);
+    if ( position < 0 ) {
+        qDebug() << "User not found";
+        return false;
+    }
+//    users.removeAt(position);
+    users.at(position)->deletePlayer();
+    qDebug() << "PL DELETED";
+    delete users.at(position);
+    qDebug() << "USER DELETED";
+    users.removeAt(position);
+    setStatus(ID, 0);
+
+    return true;
 }
 
 bool Accounts::newUser(std::string login, std::string password, std::string ip, unsigned short port)
@@ -63,17 +100,19 @@ void Accounts::showUsers()
 {
     //--TODO select * from Users Where status==1
 
-//    if ( !users.isEmpty() ) {
-//    QListIterator<User*> it(users);
-//    User *user;
 
-//        while ( it.hasNext() ) {
-//            user = it.next();
-//            std::cout << "UserID: " << user->userID << " Log: "<< user->userLog << " Pass: " << user->userPass << std::endl;
-//        }
-//    } else {
-//        qDebug() << "Users is emp";
-//    }
+//    QSqlQuery QShowOnline(*accountsDB);
+
+    //QShowOnline.prepare("SELECT * FROM );
+
+    if ( !users.isEmpty() ) {
+    QList<User*>::iterator it = users.begin();
+
+        while ( it != users.end() ) {
+//            std::cout << "Pos: " << it << "ID: " << (*it)->userID << "Nickname: " << (*it)->player->nickname;
+        it++;
+        }
+    }
 }
 
 void Accounts::showAllUsers()
@@ -105,51 +144,37 @@ void Accounts::showAllUsers()
 
 QList<User::Character*> Accounts::getCharacters(std::string ip, unsigned short port)
 {
-//    int ID = getUserID(ip, port);
-//    users.at(ID)->getCharacters();
 
-
-//    QList<User::Character*> characters;
-//    int id = getUserID(ip, port);
-//    QSqlQuery QGetCharacters(accountsDB);
-
-//    QGetCharacters.prepare("SELECT * FROM Characters WHERE id=:id");
-//    QGetCharacters.bindValue(":id", QString::number(id));
-
-//    if ( !QGetCharacters.exec() ) {
-//        qDebug() << "Get characters error: " << QGetCharacters.lastError().text();
-//    } else {
-//        int i = 0;
-//        while ( QGetCharacters.next() ) {
-//            characters.at(i)->Nickname = QGetCharacters.value(Characters::Nickname).toString();
-//            characters.at(i)->ClassId = QGetCharacters.value(Characters::ClassID).toUInt();
-//            i++;
-//        }
-//        return characters;
-//    }
-
-//    return characters;
 }
 
 bool Accounts::createCharacter(std::string ip, unsigned short port, std::string nickname, int classID)
 {
     int ID = getUserID(ip, port);
+    qDebug() << "[A::cC]User ID: " << ID;
 
     if ( ID < 0 ) {
         qDebug() << "Create character error: User not found";
     } else {
-        QSqlQuery QCreateCharacter(accountsDB);
+        if ( !charactersDB.open() ) {
+            qDebug() << "[A:cC]CharactersDB open error: " << charactersDB.lastError().text();
+            return false;
+        }
 
-        QCreateCharacter.prepare("INSERT INTO Characters(ID, nickname, classID" "VALUES(:ID, :nickname, :classID)");
+        QSqlQuery QCreateCharacter(charactersDB);
+
+        QCreateCharacter.prepare("INSERT INTO CharacterList(ID, nickname, classID)"
+                                 "VALUES(:ID, :nickname, :classID)");
         QCreateCharacter.bindValue(":ID", QString::number(ID));
         QCreateCharacter.bindValue(":nickname", QString::fromStdString(nickname));
         QCreateCharacter.bindValue(":classID", QString::number(classID));
 
         if ( !QCreateCharacter.exec() ) {
             qDebug() << "Create character error: " << QCreateCharacter.lastError().text();
+//            charactersDB.close();
             return false;
         } else {
             qDebug() << "Character " << QString::fromStdString(nickname) << " created";
+//            charactersDB.close();
             return true;
         }
     }
@@ -157,40 +182,52 @@ bool Accounts::createCharacter(std::string ip, unsigned short port, std::string 
 
 int Accounts::getUserID(std::string ip, unsigned short port)
 {
-    QList<User*>::iterator it = users.begin();
-
-    while ( it != users.end() ) {
-        if ( (*it)->userIP == ip && (*it)->userPort == port ) {
-            int index = it - users.begin();
-            qDebug() << "Return ID: " << index;
-            return index;
-        }
-    it ++;
+    int position = getUserListPosition(ip, port);
+    if ( position < 0 ) {
+        qDebug() << "[A:gUID] Error";
+        return -1;
     }
+    int ID = users.at(position)->userID;
+    return ID;
+}
 
+int Accounts::getUserListPosition(std::string ip, unsigned short port)
+{
+    if ( !users.isEmpty() ) {
+        QList<User*>::iterator it = users.begin();
+        qDebug() << "USER IP " << QString::fromStdString(ip);
+        qDebug() << port;
+        while ( it != users.end() ) {
+            if ( (*it)->userIP == ip && (*it)->userPort == port ) {
+                int index = it - users.begin();
+                qDebug() << "[ip:port]Return position: " << index;
+                return index;
+            }
+        it ++;
+        }
+    } else {
+    qDebug() << "[ip:port]Get user list position error";
     return -1;
+    }
+}
 
-//    QSqlQuery QGetUserID(accountsDB);
-//    QGetUserID.prepare("SELECT ID FROM Users WHERE ip=:ip");
-//    qDebug() << QString::fromStdString(ip) << " connected";
-//    QGetUserID.bindValue(":ip", QString::fromStdString(ip));
+int Accounts::getUserListPosition(int ID)
+{
+    if ( !users.isEmpty() ) {
+        QList<User*>::iterator it = users.begin();
 
-//    if ( !QGetUserID.exec() ) {
-//        qDebug() << "Get userID error: " << QGetUserID.lastError().text();
-//        return -4;
-//    } else {
-//        while ( QGetUserID.next() ) {
-//            if ( port == QGetUserID.value(Users::LastPort).toInt() ) {
-//                int i = QGetUserID.value(Users::UserID).toInt();
-//                qDebug() << "ID= " << QGetUserID.value(Users::UserID).toInt();
-//                return i;
-//            } else {
-//                return -5;
-//            }
-//        }
-//    }
-//    qDebug() << "getUserID(std::string, unsigned short) runtime error";
-//    return -3;
+        while ( it != users.end() ) {
+            if ( (*it)->userID == ID ) {
+                int index = it - users.begin();
+                qDebug() << "[ID]Return position: " << index;
+                return index;
+            }
+        it++;
+        }
+    } else {
+    qDebug() << "[ID]Get user list position error";
+    return -1;
+    }
 }
 
 bool Accounts::setStatus(std::string login, int status)

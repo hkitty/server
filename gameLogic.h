@@ -10,11 +10,11 @@ public:
     ~GameLogic();
 
 public:
-    void deattach(std::string ip, unsigned short port);
     void sendNewPlayer(int command, std::string ip, unsigned short port);
-    void playerAttack(int command, std::string ip, unsigned short port);
+    void playerAttack(int command, std::string ip, unsigned short port, std::string nickname);
     void playerMove(int command, std::string ip, unsigned short port, sf::Vector2f position);
     void getEnemys(int command, std::string ip, unsigned short port);
+    void detach(int command, std::string ip, unsigned short port);
 
 private:
     unsigned short const mark = 1337;
