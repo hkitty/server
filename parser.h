@@ -36,7 +36,8 @@ private:
         GetEnemys,
         PlayerMove,
         ExitGame,
-        PlayerAttack
+        PlayerAttack,
+        GetStats
     };
 
     MenuLogic *menuLogic = new MenuLogic(accounts);

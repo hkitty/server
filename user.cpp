@@ -85,9 +85,9 @@ bool User::removeCharacter(std::string nickname)
 //        qDebug() << "CharactersDB open error: " << charactersDB->lastError().text();
 //        return false;
 //    }
-
+    qDebug() << "Delete character [nickname: " << QString::fromStdString(nickname) << "]";
     QSqlQuery QRemoveCharacter(*charactersDB);
-    QRemoveCharacter.prepare("DELETE * FROM CharacterList WHERE nickname=:nickname");
+    QRemoveCharacter.prepare("DELETE FROM CharacterList WHERE nickname=:nickname");
     QRemoveCharacter.bindValue(":nickname", QString::fromStdString(nickname));
 
     if ( !QRemoveCharacter.exec() ) {
@@ -125,13 +125,13 @@ void User::setStatus(bool _status)
 
 void User::reloadCharacters()
 {
-    QList<Character*>::iterator it = characters.begin();
+//    QList<Character*>::iterator it = characters.begin();
 
-    while ( it != characters.end() ) {
-        delete (*it);
-    }
+//    while ( it != characters.end() ) {
+//        delete (*it);
+//    }
 
-//    characters.clear();
+    characters.clear();
 
 //    if ( !charactersDB->open() ) {
 //        qDebug() << "[U:U]CharactersDB open error: " << charactersDB->lastError().text();
@@ -140,7 +140,7 @@ void User::reloadCharacters()
         QSqlQuery QReloadCharacters(*charactersDB);
 
         QReloadCharacters.prepare("SELECT * FROM CharacterList WHERE ID=:ID");
-        QReloadCharacters.bindValue(":ID", QString::number(ID));
+        QReloadCharacters.bindValue(":ID", QString::number(userID));
 
         if ( !QReloadCharacters.exec() ) {
             qDebug() << "Load characters error: " << QReloadCharacters.lastError().text();

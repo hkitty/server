@@ -25,9 +25,14 @@ void GameLogic::getEnemys(int command, std::string ip, unsigned short port)
             qDebug() << "[GL::gE] not u";
 
 //            qDebug() << "NICKNAME:!!!: " << (*it)->player->nickname;
-            nickname = (*it)->player->nickname.toStdString();
+            if ( (*it)->player->nickname != nullptr ) {
+                nickname = (*it)->player->nickname.toStdString();
+                outPacket << mark << command << nickname << (*it)->player->classID << (*it)->player->position.x << (*it)->player->position.y;
+            } else {
+                outPacket << mark << command;
+            }
 
-            outPacket << mark << command << nickname << (*it)->player->classID << (*it)->player->position.x << (*it)->player->position.y;
+
             socket.send(outPacket, ip, port);
 
             outPacket.clear();
@@ -139,7 +144,9 @@ void GameLogic::playerAttack(int command, std::string ip, unsigned short port, s
                     accounts->users.at(enemyPosition)->player->stats.defence;
             qDebug() << "Damage = " << damage;
             accounts->users.at(enemyPosition)->player->stats.hitPoints -= damage;
-
+            sf::Packet toEnemy;
+            toEnemy << mark << command + 1 << accounts->users.at(enemyPosition)->player->stats.hitPoints;
+            socket.send(toEnemy, accounts->users.at(enemyPosition)->userIP, accounts->users.at(enemyPosition)->userPort);
         if ( accounts->users.at(enemyPosition)->player->stats.hitPoints <= 0 ) {
             //--TODO RIP & Spawn on_exit( default position
         }

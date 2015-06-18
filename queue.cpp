@@ -24,7 +24,9 @@ void Queue::addTask(std::string _sender, unsigned short _port, sf::Packet _packe
 
 Task Queue::getTask()
 {
-    return Tasks.dequeue();
+    if ( !Tasks.isEmpty() ) {
+        return Tasks.dequeue();
+    }
 }
 
 

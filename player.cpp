@@ -65,10 +65,10 @@ void Player::attack()
     sf::Time time = clock.restart();
     inFight = true;
     qDebug() << "bool" << inFight;
-    while ( clock.getElapsedTime().asMilliseconds() < 5000) {
+    while ( clock.getElapsedTime().asMilliseconds() < 1000) {
         time = clock.getElapsedTime();
 
-        qDebug() << "Timeleft: " << time.asMilliseconds();
+//        qDebug() << "Timeleft: " << time.asMilliseconds();
     }
 
     inFight = false;

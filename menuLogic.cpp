@@ -123,29 +123,32 @@ void MenuLogic::chooseUserCharacter(int command, std::string ip, unsigned short 
     outPacket.clear();
 }
 
-bool MenuLogic::deleteUser(std::string ip, unsigned short port, std::string nickname, unsigned short id)
-{
-
-}
-
-void MenuLogic::deleteCharacter(int command, std::string ip, unsigned short port, std::string nickname, unsigned short ID)
+void MenuLogic::deleteCharacter(int command, std::string ip, unsigned short port, std::string nickname)
 {
     bool isDeleted;
     outPacket << mark << command;
-    if ( deleteUser(ip, port, nickname, ID) ) {
-        isDeleted = true;
+
+    int position = accounts->getUserListPosition(ip, port);
+    if ( position < 0 ) {
+        qDebug() << "[ML:dC] Delete error";
     } else {
-        isDeleted = false;
+        if ( accounts->users.at(position)->removeCharacter(nickname) ) {
+            isDeleted = true;
+            accounts->users.at(position)->reloadCharacters();
+        } else {
+            isDeleted = false;
+        }
+
+        outPacket << isDeleted;
+        socket.send(outPacket, ip, port);
+
+        outPacket.clear();
+        if ( isDeleted ) {
+            getUserCharacters(1, ip, port);
+            qDebug() << "OUT PACKET";
+        }
     }
 
-    outPacket << isDeleted;
-    socket.send(outPacket, ip, port);
-
-    outPacket.clear();
-    if ( isDeleted ) {
-        getUserCharacters(1, ip, port);
-        qDebug() << "OUT PACKET";
-    }
 }
 
 void MenuLogic::newCharacter(int command, std::string ip, unsigned short port, std::string nickname, int classID)

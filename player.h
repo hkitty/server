@@ -24,6 +24,7 @@ public:
         unsigned short manaPoints;
         unsigned short attack;
         unsigned short defence;
+        unsigned short attackSpeed;
     } stats;
 
     sf::Vector2f position;

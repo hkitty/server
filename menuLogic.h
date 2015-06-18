@@ -15,14 +15,12 @@ public:
     void checkLogin(int command, std::string ip, unsigned short port, std::string login, std::string password);
 
     void chooseUserCharacter(int command, std::string ip, unsigned short port, std::string nickname);
-    void deleteCharacter(int command, std::string ip, unsigned short port, std::string nickname, unsigned short ID);
+    void deleteCharacter(int command, std::string ip, unsigned short port, std::string nickname);
     void newCharacter(int command, std::string ip, unsigned short port, std::string nickname, int classID);
 
 private:
     void loginAccept(int command, std::string ip, unsigned short port);
     void loginReject(int command, std::string ip, unsigned short port);
-
-    bool deleteUser(std::string ip, unsigned short port, std::string nickname, unsigned short id);
 
 private:
     unsigned short const mark = 1337;

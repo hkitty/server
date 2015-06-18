@@ -41,20 +41,20 @@ void Parser::receive(Task task)
             break;
 
             case Commands::Registration: {
-                std::string log;
-                std::string pass;
+                std::string login;
+                std::string password;
 
-                packet >> log >> pass;
-                menuLogic->registration(command, task.sender, port, log, pass);
+                packet >> login >> password;
+                menuLogic->registration(command, task.sender, port, login, password);
             }
             break;
 
             case Commands::NewCharacter: {
-                std::string characterNickname;
-                int characterClass;
+                std::string nickname;
+                int classID;
 
-                packet >> characterNickname >> characterClass;
-                menuLogic->newCharacter(command, task.sender, port, characterNickname, characterClass);
+                packet >> nickname >> classID;
+                menuLogic->newCharacter(command, task.sender, port, nickname, classID);
                 menuLogic->getUserCharacters(Commands::GetUserCharacters, task.sender, port);
             }
             break;
@@ -69,13 +69,13 @@ void Parser::receive(Task task)
 
             case Commands::DeleteCharacter: {
                 qDebug() << "Enter del cahr";
-                std::string charactName;
-                unsigned short id;
+                std::string nickname;
+
                 std::cout << "Pack size berore: " << packet.getDataSize();
-                packet >> charactName >> id;
+                packet >> nickname;
                 std::cout << "Pack size after: " << packet.getDataSize();
-                std::cout << "NICKNAMEEEE::: " << charactName;
-                menuLogic->deleteCharacter(command, task.sender, port, charactName, id);
+                std::cout << "NICKNAMEEEE::: " << nickname;
+                menuLogic->deleteCharacter(command, task.sender, port, nickname);
             }
             break;
 
